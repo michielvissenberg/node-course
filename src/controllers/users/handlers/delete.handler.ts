@@ -1,16 +1,13 @@
-import { NextFunction, Request, Response } from "express";
-
+import { NotFoundException } from "@nestjs/common";
 import { UserStore } from "./user.store";
 
-export const deleteById = (req: Request, res: Response, next: NextFunction) => {
-    const id: number = parseInt(req.params.id.toString(), 10);
-    const user = UserStore.get(id);
+export const deleteUser = (id: string) => {
+    const idNum = Number(id)
+    const user = UserStore.get(idNum);
 
     if (!user) {
-        return res.status(400).json( {error: "user not found"});
+        throw new NotFoundException("user not found");
     }
-    UserStore.delete(id);
-    res.status(204).end();
+    UserStore.delete(idNum); 
 };
 
-module.exports = { deleteById };

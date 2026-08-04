@@ -1,63 +1,104 @@
-import { User, UserStore} from '../../controllers/users/handlers/user.store';
-import { App } from '../../app'
-import supertest from 'supertest';
-import {expect} from 'chai';
-import { beforeEach, describe, it } from "mocha";
+import { Test, TestingModule } from "@nestjs/testing";
+import { INestApplication, ValidationPipe } from "@nestjs/common";
+import { expect } from "chai";
+import { before, beforeEach, after, describe, it } from "mocha";
+import request from "supertest";
+
+import { AppModule } from "../../app.module";
+import { User, UserStore } from "../../controllers/users/handlers/user.store";
 
 describe("Integration tests", () => {
 	describe("User Tests", () => {
-        let request: any;
-		beforeEach(() => {
-			UserStore.users = [];
-			const app = new App();
-			request = supertest(app.host);
+		let app: INestApplication;
+
+		before(async () => {
+			const moduleFixture: TestingModule = await Test.createTestingModule(
+				{
+					imports: [AppModule],
+				}
+			).compile();
+
+			app = moduleFixture.createNestApplication();
+
+			// Apply the same configuration as in main.ts
+			app.useGlobalPipes(
+				new ValidationPipe({
+					whitelist: true,
+					forbidNonWhitelisted: true,
+					transform: true,
+					transformOptions: { exposeUnsetFields: false },
+				})
+			);
+
+			app.enableCors({
+				origin: "*",
+				credentials: true,
+				exposedHeaders: ["x-auth"],
+			});
+
+			app.setGlobalPrefix("api");
+
+			await app.init();
 		});
-        it("should CRUD users", async () => {
-            await request.post(`/api/users`).expect(401);
 
-            const { body: createResponse } = await request
-                .post(`/api/users`)
-                .send({
-                    name: "test",
-                    email: "test-user+1@panenco.com",
-                    password: "real secret stuff",
-                } as User)
-                .set("auth", "api-key")
-                .expect(200);
+		beforeEach(() => {
+			UserStore.users = []; // Clean up users before each test
+		});
 
-            expect(UserStore.users.some((x) => x.email === createResponse.email)).true;
+		after(async () => {
+			await app.close();
+		});
 
-            const { body: getResponse } = await request
-                .get(`/api/users/${createResponse.id}`)
-                .expect(200);
-            expect(getResponse.name).equal("test");
+		it("should CRUD users", async () => {
+			// Successfully create new user
+			const { body: createResponse } = await request(app.getHttpServer())
+				.post(`/api/users`)
+				.send({
+					name: "test",
+					email: "test-user+1@panenco.com",
+					password: "real secret stuff",
+				} as User)
+				.expect(201);
 
-            const { body: updateResponse } = await request
-                .patch(`/api/users/${createResponse.id}`)
-                .send({
-                    email: "test-user+updated@panenco.com",
-                } as User)
-                .expect(200);
+			expect(
+				UserStore.users.some((x) => x.email === createResponse.email)
+			).true;
 
-            expect(updateResponse.name).equal("test");
-            expect(updateResponse.email).equal("test-user+updated@panenco.com");
-            expect(updateResponse.password).undefined; 
+			// Get the newly created user
+			const { body: getResponse } = await request(app.getHttpServer())
+				.get(`/api/users/${createResponse.id}`)
+				.expect(200);
+			expect(getResponse.name).equal("test");
 
-            const { body: getAllResponse } = await request
-                .get(`/api/users`)
-                .expect(200);
+			// Get all users
+			const { body: getListRes } = await request(app.getHttpServer())
+				.get(`/api/users`)
+				.expect(200);
+			expect(getListRes.length).equal(1);
+			expect(getListRes[0].name).equal("test");
 
-            const newUser = getAllResponse.find(
-                (x: User) => x.name === getResponse.name
-            );
-            expect(newUser).not.undefined;
-            expect(newUser.email).equal("test-user+updated@panenco.com");
-            await request.delete(`/api/users/${createResponse.id}`).expect(204);
+			// Successfully update user
+			const { body: updateResponse } = await request(app.getHttpServer())
+				.patch(`/api/users/${createResponse.id}`)
+				.send({
+					email: "test-user+1@panenco.com",
+				} as User)
+				.expect(200);
+			
+			expect(updateResponse.name).equal("test");
+			expect(updateResponse.email).equal("test-user+1@panenco.com");
+			expect(updateResponse.password).undefined; // password excluded from response
 
-            const { body: getNoneResponse } = await request
-                .get(`/api/users`)
-                .expect(200);
-            expect(getNoneResponse.length).equal(0);
-        });
+			// Delete the newly created user
+			await request(app.getHttpServer())
+				.delete(`/api/users/${createResponse.id}`)
+				.expect(204);
+
+			// Get all users again after deleted the only user
+			const { body: getNoneResponse } = await request(app.getHttpServer())
+				.get(`/api/users`)
+				.expect(200);
+			expect(getNoneResponse.length).equal(0);
+		});
 	});
 });

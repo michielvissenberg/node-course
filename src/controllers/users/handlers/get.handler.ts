@@ -1,17 +1,11 @@
-import { NextFunction, Request, Response } from "express";
-
+import { NotFoundException } from "@nestjs/common";
 import { UserStore } from "./user.store";
 
-export const getUserById = (req: Request, res: Response, next: NextFunction) => {
-    console.log("hello");
-    const id: number = parseInt(req.params.id.toString(), 10);
-    const user = UserStore.get(id);
+export const get = (id: string) => {
+    const idNum = Number(id);
+    const user = UserStore.get(idNum);
     if (!user) {
-        res.status(404).send("error: user not found");
-        return;
+        throw new NotFoundException("user not found");
     }
-    res.json(user);
-    
+    return user;    
 };
-
-module.exports = { getUserById };
