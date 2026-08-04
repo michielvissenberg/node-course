@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start":"node ./src/server.js",
-    "dev": "node --watch ./src/server.js"
+    "build": "tsc",
+    "build:clean": "rm -rf build && pnpm run build",
+    "start": "node build/server.js",
+    "dev": "ts-node src/server.ts",
+    "test": "tsc --noEmit && mocha -r ts-node/register ./src/tests/**/*.test.ts"
   },
   "keywords": [],
   "author": "",
@@ -20,5 +22,17 @@
   },
   "dependencies": {
     "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/chai": "^5.2.3",
+    "@types/express": "^5.0.6",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^24.13.3",
+    "chai": "^6.2.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "mocha": "^11.7.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }

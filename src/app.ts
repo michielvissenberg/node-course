@@ -1,20 +1,24 @@
-const express = require("express");
-const { UserRoute } = require("./controllers/users/user.route");
+import { NextFunction, Request, Response } from "express";
+
+import express from "express";
+import { UserRoute as AppUserRoute } from "./controllers/users/user.route";
 
 class App {
+    private host: any;
+
     constructor() {
         this.host = express();
         this.host.use(express.json());
-        this.host.use((req, res, next) => {
+        this.host.use((req: Request, res: Response, next: NextFunction) => {
 	        console.log(req.method, req.url);
 	        next();
         });
-        const usersRoute = new UserRoute();
+        const usersRoute = new AppUserRoute();
         this.host.use(`/api/${usersRoute.path}`, usersRoute.router);
-            this.host.use((req, res, next) => {
+            this.host.use((req: Request, res: Response, next: NextFunction) => {
 	        res.status(404).send("No Endpoint found");
         });
-        this.host.use((error, req, res, next) => {
+        this.host.use((error: any, req: Request, res: Response, next: NextFunction) => {
 	        res.status(400).json(error);
         });
     }
@@ -24,7 +28,7 @@ class App {
             console.info(`app running on http://localhost:3000`);
             console.info(`------------------------------------`);
         });
-        this.host.get("/", (req, res, next) => {
+        this.host.get("/", (req: Request, res: Response, next: NextFunction) => {
 	        res.send("Hello World!");
         });
     }
