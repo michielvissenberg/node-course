@@ -2,6 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
+import { prisma } from "./lib/prisma";
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
@@ -43,6 +44,10 @@ async function bootstrap() {
 
 	const document = SwaggerModule.createDocument(app, config);
 	SwaggerModule.setup("docs", app, document);
+	
+	// Connect to database
+	await prisma.$connect();
+	console.log("Database connected successfully");
 
 	await app.listen(3000);
 	console.log("🚀 http://localhost:3000/docs");

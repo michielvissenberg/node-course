@@ -30,6 +30,7 @@ export class UserController {
 
 	@Get()
 	@UseGuards(JwtAuthGuard)
+	@ApiSecurity("x-auth")
 	@Serialize(UserView)
 	@ApiOperation({ summary: "Get all users" })
 	@ApiResponse({
@@ -38,11 +39,13 @@ export class UserController {
 		type: [UserView],
 	})
 	async getList(@Query() query: SearchQuery): Promise<UserView[]> {
-		return getList(query.search);
+		const [users] = await getList(query.search);
+		return users;
 	}
 
 	@Get(":id")
 	@UseGuards(JwtAuthGuard)
+	@ApiSecurity("x-auth")
 	@Serialize(UserView)
 	async get(@Param("id") id: string): Promise<UserView> {
 		return get(id);
@@ -50,6 +53,7 @@ export class UserController {
 
 	@Patch(":id")
 	@UseGuards(JwtAuthGuard)
+	@ApiSecurity("x-auth")
 	@Serialize(UserView)
 	async update(@Param("id") id: string, @Body() body: UserBody): Promise<UserView> {
 		return update(id, body);
@@ -57,6 +61,7 @@ export class UserController {
 
 	@Delete(":id")
 	@UseGuards(JwtAuthGuard)
+	@ApiSecurity("x-auth")
 	@HttpCode(HttpStatus.NO_CONTENT)
 	async delete(@Param("id") id: string) {
 		await deleteUser(id);

@@ -1,13 +1,21 @@
 import { UnauthorizedException } from "@nestjs/common";
 import * as jwt from "jsonwebtoken";
-
 import { LoginBody } from "../../../contracts/login.body";
-import { UserStore } from "../../users/handlers/user.store";
 import config from "../../../config";
+import { prisma } from "../../../lib/prisma";
+import bcrypt from "bcryptjs";
 
 export const createToken = async (body: LoginBody) => {
-	const user = UserStore.getByEmail(body.email);
-	if (!user || user.password !== body.password) {
+	const user = await prisma.user.findUnique({
+		where: { email: body.email },
+	});
+
+	if (!user) {
+		throw new UnauthorizedException("Invalid credentials");
+	}
+
+	const isPasswordValid = await bcrypt.compare(body.password, user.password);
+	if (!isPasswordValid) {
 		throw new UnauthorizedException("Invalid credentials");
 	}
 
@@ -17,6 +25,6 @@ export const createToken = async (body: LoginBody) => {
 
 	return {
 		token,
-		expiresIn: 3600, 
+		expiresIn: 36000, 
 	};
 };

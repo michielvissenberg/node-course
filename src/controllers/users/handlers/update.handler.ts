@@ -1,14 +1,26 @@
 import { NotFoundException } from "@nestjs/common";
-
 import { UserBody } from "../../../contracts/user.body";
-import { UserStore } from "./user.store";
+import { prisma } from "../../../lib/prisma";
+import bcrypt from "bcryptjs";
 
-export const update = (idString: string, body: UserBody) => {
-	const id = Number(idString);
-	const user = UserStore.get(id);
+export const update = async (id: string, body) => {
+	const user = await prisma.user.findUnique({
+		where: { id },
+	});
+
 	if (!user) {
 		throw new NotFoundException("User not found");
 	}
-	const updated = UserStore.update(id, { ...user, ...body });
-	return updated;
+	
+	const updateData: any = {};
+	if (body.name !== undefined) updateData.name = body.name;
+	if (body.email !== undefined) updateData.email = body.email;
+	if (body.password !== undefined) {
+		updateData.password = await bcrypt.hash(body.password, 10);
+	}
+
+	return prisma.user.update({
+		where: { id },
+		data: updateData,
+	});
 };

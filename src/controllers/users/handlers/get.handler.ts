@@ -1,11 +1,14 @@
 import { NotFoundException } from "@nestjs/common";
-import { UserStore } from "./user.store";
+import { prisma } from "../../../lib/prisma";
 
-export const get = (id: string) => {
-    const idNum = Number(id);
-    const user = UserStore.get(idNum);
+export const get = async (id: string) => {
+    const user = await prisma.user.findUnique({
+        where: { id },
+    }) 
+    
     if (!user) {
         throw new NotFoundException("user not found");
     }
+    
     return user;    
 };

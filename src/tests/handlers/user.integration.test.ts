@@ -3,9 +3,8 @@ import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { expect } from "chai";
 import { before, beforeEach, after, describe, it } from "mocha";
 import request from "supertest";
-
 import { AppModule } from "../../app.module";
-import { User, UserStore } from "../../controllers/users/handlers/user.store";
+import { prisma } from "../../lib/prisma";
 
 describe("Integration tests", () => {
 	describe("User Tests", () => {
@@ -41,8 +40,8 @@ describe("Integration tests", () => {
 			await app.init();
 		});
 
-		beforeEach(() => {
-			UserStore.users = []; // Clean up users before each test
+		beforeEach(async () => {
+			await prisma.user.deleteMany(); // Clean up users before each test
 		});
 
 		after(async () => {
@@ -50,7 +49,6 @@ describe("Integration tests", () => {
 		});
 
 		it("should CRUD users with authentication", async () => {
-			// Successfully create new user (public endpoint)
 			const { body: createResponse } = await request(app.getHttpServer())
 				.post(`/api/users`)
 				.send({
@@ -59,9 +57,11 @@ describe("Integration tests", () => {
 					password: "real secret stuff",
 				})
 				.expect(201);
-
-			expect(UserStore.users.some((x) => x.email === createResponse.email)).true;
-
+			const user = await prisma.user.findUnique({
+				where: { email: createResponse.email }, 
+			});
+			expect(user.email).equal(createResponse.email);
+			expect(user.name).equal(createResponse.name);			
 			// Login to get JWT token
 			const { body: loginResponse } = await request(app.getHttpServer())
 				.post(`/api/auth/login`)
