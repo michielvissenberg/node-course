@@ -49,54 +49,72 @@ describe("Integration tests", () => {
 			await app.close();
 		});
 
-		it("should CRUD users", async () => {
-			// Successfully create new user
+		it("should CRUD users with authentication", async () => {
+			// Successfully create new user (public endpoint)
 			const { body: createResponse } = await request(app.getHttpServer())
 				.post(`/api/users`)
 				.send({
 					name: "test",
 					email: "test-user+1@panenco.com",
 					password: "real secret stuff",
-				} as User)
+				})
 				.expect(201);
 
-			expect(
-				UserStore.users.some((x) => x.email === createResponse.email)
-			).true;
+			expect(UserStore.users.some((x) => x.email === createResponse.email)).true;
 
-			// Get the newly created user
-			const { body: getResponse } = await request(app.getHttpServer())
-				.get(`/api/users/${createResponse.id}`)
+			// Login to get JWT token
+			const { body: loginResponse } = await request(app.getHttpServer())
+				.post(`/api/auth/login`)
+				.send({
+					email: "test-user+1@panenco.com",
+					password: "real secret stuff",
+				})
 				.expect(200);
-			expect(getResponse.name).equal("test");
 
-			// Get all users
+			const token = loginResponse.token;
+			expect(token).to.be.a("string");
+
+			// Try to access protected endpoint without token (should fail)
+			await request(app.getHttpServer()).get(`/api/users`).expect(401);
+
+			// Get all users with valid token
 			const { body: getListRes } = await request(app.getHttpServer())
 				.get(`/api/users`)
+				.set("x-auth", token)
 				.expect(200);
 			expect(getListRes.length).equal(1);
 			expect(getListRes[0].name).equal("test");
 
-			// Successfully update user
+			// Get the newly created user with token
+			const { body: getResponse } = await request(app.getHttpServer())
+				.get(`/api/users/${createResponse.id}`)
+				.set("x-auth", token)
+				.expect(200);
+			expect(getResponse.name).equal("test");
+
+			// Successfully update user with token
 			const { body: updateResponse } = await request(app.getHttpServer())
 				.patch(`/api/users/${createResponse.id}`)
 				.send({
-					email: "test-user+1@panenco.com",
-				} as User)
+					email: "test-user+updated@panenco.com",
+				})
+				.set("x-auth", token)
 				.expect(200);
-			
+
 			expect(updateResponse.name).equal("test");
-			expect(updateResponse.email).equal("test-user+1@panenco.com");
+			expect(updateResponse.email).equal("test-user+updated@panenco.com");
 			expect(updateResponse.password).undefined; // password excluded from response
 
-			// Delete the newly created user
+			// Delete the user with token
 			await request(app.getHttpServer())
 				.delete(`/api/users/${createResponse.id}`)
+				.set("x-auth", token)
 				.expect(204);
 
-			// Get all users again after deleted the only user
+			// Verify user is deleted
 			const { body: getNoneResponse } = await request(app.getHttpServer())
 				.get(`/api/users`)
+				.set("x-auth", token)
 				.expect(200);
 			expect(getNoneResponse.length).equal(0);
 		});
