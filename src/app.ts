@@ -3,8 +3,8 @@ import { NextFunction, Request, Response } from "express";
 import express from "express";
 import { UserRoute as AppUserRoute } from "./controllers/users/user.route";
 
-class App {
-    private host: any;
+export class App {
+    public host: any;
 
     constructor() {
         this.host = express();

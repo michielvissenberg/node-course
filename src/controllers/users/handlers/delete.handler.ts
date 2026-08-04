@@ -9,9 +9,8 @@ export const deleteById = (req: Request, res: Response, next: NextFunction) => {
     if (!user) {
         return res.status(400).json( {error: "user not found"});
     }
-
     UserStore.delete(id);
-    res.status(204).json(`user ${id} deleted`);
+    res.status(204).end();
 };
 
 module.exports = { deleteById };

@@ -5,12 +5,12 @@ import { getList } from "./handlers/getList.handler";
 import { updateById } from "./handlers/update.handler";
 import { deleteById } from "./handlers/delete.handler";
 
-// const adminMiddleware = (req: Request, res: Response, next: NextFunction) => {
-//     if (req.header("auth") !== "api-key") {
-//         return res.status(401).send("Unauthorized");
-// 	}
-// 	next();
-// };
+const adminMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    if (req.header("auth") !== "api-key") {
+        return res.status(401).send("Unauthorized");
+	}
+	next();
+};
 
 export class UserRoute {
     public router: Router;
@@ -24,7 +24,7 @@ export class UserRoute {
         this.router.get("/:id", getUserById);
         this.router.patch("/:id", updateById);
         this.router.delete("/:id", deleteById);
-        this.router.post("/", create);
+        this.router.post("/",adminMiddleware, create);
     } 
 }
 
