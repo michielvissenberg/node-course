@@ -1,5 +1,6 @@
 import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
+import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
@@ -25,8 +26,26 @@ async function bootstrap() {
 	// Set global prefix
 	app.setGlobalPrefix("api");
 
+	// Swagger configuration
+	const config = new DocumentBuilder()
+		.setTitle("Node Course API")
+		.setDescription("The Node Course API description")
+		.setVersion("1.0")
+		.addApiKey(
+			{
+				type: "apiKey",
+				name: "x-auth",
+				in: "header",
+			},
+			"x-auth"
+		)
+		.build();
+
+	const document = SwaggerModule.createDocument(app, config);
+	SwaggerModule.setup("docs", app, document);
+
 	await app.listen(3000);
-	console.log("🚀 http://localhost:3000");
+	console.log("🚀 http://localhost:3000/docs");
 }
 
 bootstrap();
