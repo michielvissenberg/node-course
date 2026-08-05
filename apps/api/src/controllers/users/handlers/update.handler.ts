@@ -1,5 +1,4 @@
 import { NotFoundException } from "@nestjs/common";
-import { UserBody } from "../../../contracts/user.body";
 import { prisma } from "../../../lib/prisma";
 import bcrypt from "bcryptjs";
 

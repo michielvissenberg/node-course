@@ -12,6 +12,7 @@ import { SearchQuery } from "../../contracts/search.query";
 import { Serialize } from "../../decorators/serialize.decorator";
 import { UserView } from "../../contracts/user.view";
 import { JwtAuthGuard } from "../../guards/jwt-auth.guard";
+import { UpdateUserBody } from "../../contracts/update-user.body";
 
 @Controller("users")
 export class UserController {
@@ -56,7 +57,7 @@ export class UserController {
 	@ApiSecurity("x-auth")
 	@Serialize(UserView)
 	@ApiOperation({ operationId: "updateUser", summary: "Update a user" })
-	async update(@Param("id") id: string, @Body() body: UserBody): Promise<UserView> {
+	async update(@Param("id") id: string, @Body() body: UpdateUserBody): Promise<UserView> {
 		return update(id, body);
 	}
 

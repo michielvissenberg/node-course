@@ -60,8 +60,8 @@ describe("Integration tests", () => {
 			const user = await prisma.user.findUnique({
 				where: { email: createResponse.email }, 
 			});
-			expect(user.email).equal(createResponse.email);
-			expect(user.name).equal(createResponse.name);			
+			expect(user!.email).equal(createResponse.email);
+			expect(user!.name).equal(createResponse.name);			
 			// Login to get JWT token
 			const { body: loginResponse } = await request(app.getHttpServer())
 				.post(`/api/auth/login`)
