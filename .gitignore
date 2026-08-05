@@ -1,5 +1,8 @@
 node_modules/
+dist/
 build/
-.vscode/
-*.env
-/src/generated/prisma
+.next/
+.turbo/
+apps/api/data/
+.env
+!.env.example
