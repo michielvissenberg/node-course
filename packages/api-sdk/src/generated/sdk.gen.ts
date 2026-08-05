@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateUserData, CreateUserResponses, DeleteUserData, DeleteUserResponses, GetUserData, GetUserResponses, ListUsersData, ListUsersResponses, LoginData, LoginResponses, UpdateUserData, UpdateUserResponses } from './types.gen';
+import type { CreateProductData, CreateProductResponses, CreateUserData, CreateUserResponses, DeleteUserData, DeleteUserResponses, GetUserData, GetUserResponses, ListProductsData, ListProductsResponses, ListUsersData, ListUsersResponses, LoginData, LoginResponses, UpdateUserData, UpdateUserResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -75,6 +75,28 @@ export const updateUser = <ThrowOnError extends boolean = false>(options: Option
  */
 export const login = <ThrowOnError extends boolean = false>(options: Options<LoginData, ThrowOnError>): RequestResult<LoginResponses, unknown, ThrowOnError> => (options.client ?? client).post<LoginResponses, unknown, ThrowOnError>({
     url: '/api/auth/login',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Search all products
+ */
+export const listProducts = <ThrowOnError extends boolean = false>(options?: Options<ListProductsData, ThrowOnError>): RequestResult<ListProductsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListProductsResponses, unknown, ThrowOnError>({
+    security: [{ name: 'x-auth', type: 'apiKey' }],
+    url: '/api/products',
+    ...options
+});
+
+/**
+ * Create a new product
+ */
+export const createProduct = <ThrowOnError extends boolean = false>(options: Options<CreateProductData, ThrowOnError>): RequestResult<CreateProductResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateProductResponses, unknown, ThrowOnError>({
+    security: [{ name: 'x-auth', type: 'apiKey' }],
+    url: '/api/products',
     ...options,
     headers: {
         'Content-Type': 'application/json',

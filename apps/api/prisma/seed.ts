@@ -6,7 +6,8 @@ const prisma = new PrismaClient();
 async function main() {
 	// Clear existing data
 	await prisma.user.deleteMany();
-
+	await prisma.product.deleteMany();
+	
 	// Create initial users
 	const users = await Promise.all([
 		prisma.user.create({
@@ -26,6 +27,23 @@ async function main() {
 	]);
 
 	console.log("Seeded users:", users);
+	
+	const products = await Promise.all([
+		prisma.product.create({
+			data: {
+				name: "apple",
+				expiresAt: "2026, 9, 1",
+			},
+		}),
+		prisma.product.create({
+			data: {
+				name: "cookie",
+				expiresAt: "2026, 12, 12",
+			}
+		}),
+	]);
+
+	console.log("Seeder products:", products);
 }
 
 main()

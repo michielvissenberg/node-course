@@ -3,9 +3,10 @@ import { APP_INTERCEPTOR, Reflector } from "@nestjs/core";
 import { UserController } from "./controllers/users/user.controller";
 import { TransformInterceptor } from "./interceptors/transform.interceptor";
 import { AuthController } from "./controllers/auth/auth.controller";
+import { ProductController } from "./controllers/products/product.controller";
 
 @Module({
-	controllers: [UserController, AuthController],
+	controllers: [UserController, AuthController, ProductController],
 	providers: [
 		{
 			provide: APP_INTERCEPTOR,

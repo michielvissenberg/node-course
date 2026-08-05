@@ -4,7 +4,6 @@ import { AccessTokenView } from "../../contracts/accessToken.view";
 import { LoginBody } from "../../contracts/login.body";
 import { createToken } from "./handlers/login.handler";
 import { ApiOperation, ApiResponse } from "@nestjs/swagger";
-import { serialize } from "v8";
 
 @Controller("auth")
 export class AuthController {

@@ -26,6 +26,17 @@ export type AccessTokenView = {
     expiresIn: number;
 };
 
+export type ProductBody = {
+    name: string;
+    expiresAt: string;
+};
+
+export type ProductView = {
+    id: string;
+    name: string;
+    expiresAt: string;
+};
+
 export type ListUsersData = {
     body?: never;
     path?: never;
@@ -116,3 +127,40 @@ export type LoginResponses = {
 };
 
 export type LoginResponse = LoginResponses[keyof LoginResponses];
+
+export type ListProductsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Filter users by name or email
+         */
+        search?: string;
+    };
+    url: '/api/products';
+};
+
+export type ListProductsResponses = {
+    /**
+     * Product(s) retrieved successfully
+     */
+    200: Array<ProductView>;
+};
+
+export type ListProductsResponse = ListProductsResponses[keyof ListProductsResponses];
+
+export type CreateProductData = {
+    body: ProductBody;
+    path?: never;
+    query?: never;
+    url: '/api/products';
+};
+
+export type CreateProductResponses = {
+    /**
+     * User created successfully
+     */
+    201: ProductView;
+};
+
+export type CreateProductResponse = CreateProductResponses[keyof CreateProductResponses];
