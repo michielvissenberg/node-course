@@ -7,43 +7,115 @@ async function main() {
 	// Clear existing data
 	await prisma.user.deleteMany();
 	await prisma.product.deleteMany();
+	await prisma.fridge.deleteMany();
+	await prisma.recipe.deleteMany();
 	
 	// Create initial users
 	const users = await Promise.all([
 		prisma.user.create({
 			data: {
-				name: "John Doe",
+				name: "John",
+				surname: "Doe",
 				email: "john@example.com",
 				password: await bcrypt.hash("password123", 10),
+				products: {
+					create: [
+						{name: "apple", size: 0.15},
+						{name: "cookie", size: 0.04},
+						{name: "bolognese sauce", size: 0.5},
+					]
+				},
+				accessTo: {
+					create: [
+						{address: "Dennenlaan 2", floor: 1, capacity: 600}
+					]
+				},
+				knowsRecipe: {
+					create: [
+						{name: "spaghetti bolognese", description: "cook the pasta and add the warmed up bolognese sauce", ingredients: {
+							create: [{name: "spaghetti", size: 0.5}]
+							}
+						}
+					]
+				}
 			},
 		}),
 		prisma.user.create({
 			data: {
-				name: "Jane Smith",
+				name: "Jane",
+				surname: "Smith",
 				email: "jane@example.com",
 				password: await bcrypt.hash("password456", 10),
+				products: {
+					create: [
+						{name: "pear", size: 0.2},
+						{name: "cola can", size: 0.33}
+					]
+				},
+				accessTo: {
+					create: [
+						{address: "Dennenlaan 1", floor: 0, capacity: 700}
+					]
+				}
 			},
 		}),
 	]);
-
-	console.log("Seeded users:", users);
-	
-	const products = await Promise.all([
-		prisma.product.create({
+	const updated = await prisma.user.update({
+			where: {email: "jane@example.com"},
 			data: {
-				name: "apple",
-				expiresAt: "2026, 9, 1",
-			},
-		}),
-		prisma.product.create({
-			data: {
-				name: "cookie",
-				expiresAt: "2026, 12, 12",
+				accessTo: { connect: [
+					{id: (await prisma.fridge.findFirst(
+						{where: {address: "Dennenlaan 2"}}
+					))!.id}
+				]}
 			}
+		})
+
+	console.log("Seeded users:", users, updated);
+	
+
+	const fridges = await Promise.all([
+		prisma.fridge.update({
+			where: {id: (await prisma.fridge.findFirst(
+						{where: {address: "Dennenlaan 2"}}
+					))!.id},
+			data: {
+				products: { connect: [
+					{id: (await prisma.product.findFirst(
+						{where: {name: "pear"}}
+					))!.id}, 
+					{id: (await prisma.product.findFirst(
+						{where: {name: "apple"}}
+					))!.id},
+					{id: (await prisma.product.findFirst(
+						{where: {name: "bolognese sauce"}}
+					))!.id},
+					{id: (await prisma.product.findFirst(
+						{where: {name: "cola can"}}
+					))!.id},
+				]}
+			}
+		})
+	]);
+
+	console.log("Seeded fridges:", fridges);
+
+	const recipes = await Promise.all([
+		prisma.recipe.update({
+			where: {id: (await prisma.recipe.findFirst(
+						{where: {name: "spaghetti bolognese"}}
+					))!.id},
+			data: {
+				ingredients: { connect: [
+					{id: (await prisma.product.findFirst(
+						{where: {name: "bolognese sauce"}}
+					))!.id},
+				]},
+			},
 		}),
 	]);
 
-	console.log("Seeder products:", products);
+	console.log("Seeded recipes:", recipes);
 }
 
 main()

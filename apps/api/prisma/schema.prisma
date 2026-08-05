@@ -10,10 +10,15 @@ datasource db {
 model User {
   id        String    @id @default(uuid())
   name      String
+  surname   String 
   email     String    @unique
   password  String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+
+  products  Product[]
+  accessTo  Fridge[]
+  knowsRecipe Recipe[]
 
   @@map("users")
 }
@@ -21,9 +26,41 @@ model User {
 model Product {
   id        String    @id @default(uuid())
   name      String  
-  expiresAt String
+  size      Float       // in litres 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
+  owner     User?      @relation(fields: [ownerId], references: [id])
+  ownerId   String?
+  fridge    Fridge?    @relation(fields: [fridgeId], references: [id]) 
+  fridgeId  String?
+  recipes   Recipe[]
+
   @@map("products")
+}
+
+model Fridge {
+  id        String    @id @default(uuid())
+  address   String    
+  floor     Int
+  capacity  Float       // in litres
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  products  Product[]
+  user      User[]
+
+  @@map("fridges")
+  @@unique([address, floor])
+}
+
+model Recipe {
+  id        String    @id @default(uuid())
+  name      String  
+  description String
+
+  ingredients Product[]
+  knownBy   User[]
+
+  @@map("recipes")
 }
