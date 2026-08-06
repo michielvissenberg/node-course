@@ -8,6 +8,7 @@ export const create = async (body: UserBody) => {
 	const user = await prisma.user.create({
 		data: {
 			name: body.name,
+			surname: body.surname,
 			email: body.email,
 			password: hashedPassword,
 		},

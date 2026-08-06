@@ -1,9 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude, Expose } from "class-transformer";
-import { IsEmail, IsString, IsUUID } from "class-validator";
+import { IsNumber, IsString, IsUUID } from "class-validator";
 
 @Exclude()
-export class UserView {
+export class FridgeView {
   @ApiProperty({ format: "uuid" })
   @Expose()
   @IsUUID()
@@ -12,15 +12,15 @@ export class UserView {
   @ApiProperty()
   @Expose()
   @IsString()
-  public name: string;
+  public address: string;
 
   @ApiProperty()
   @Expose()
-  @IsString()
-  public surname: string;
-  
+  @IsNumber()
+  public floor: string;
+
   @ApiProperty()
   @Expose()
-  @IsEmail()
-  public email: string;
+  @IsNumber()
+  public capacity: string;
 }

@@ -53,6 +53,7 @@ describe("Integration tests", () => {
 				.post(`/api/users`)
 				.send({
 					name: "test",
+					surname: "1",
 					email: "test-user+1@panenco.com",
 					password: "real secret stuff",
 				})

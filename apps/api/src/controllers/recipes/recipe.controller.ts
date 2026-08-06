@@ -1,0 +1,68 @@
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
+import { Serialize } from "../../decorators/serialize.decorator";
+import { ApiOperation, ApiResponse, ApiSecurity } from "@nestjs/swagger";
+import { JwtAuthGuard } from "../../guards/jwt-auth.guard";
+import { SearchQuery } from "../../contracts/search.query";
+import { RecipeBody } from "../../contracts/recipe.body";
+import { RecipeView } from "../../contracts/recipe.view";
+ 
+
+@Controller("recipes")
+export class RecipeController {
+    @Post()
+    @HttpCode(HttpStatus.CREATED)
+    @UseGuards(JwtAuthGuard)
+    @ApiSecurity("x-auth")
+    @Serialize(RecipeView)
+    @ApiOperation({ operationId: "createRecipe", summary: "Create a new recipe" })
+    @ApiResponse({
+        status: 201,
+        description: "Recipe created successfully",
+        type: RecipeView,
+    })
+    async create(@Body() body: RecipeBody): Promise<RecipeView> {
+        return create(body);
+    }
+
+
+    @Get()
+    @UseGuards(JwtAuthGuard)
+    @ApiSecurity("x-auth")
+    @Serialize(RecipeView)
+    @ApiOperation({ operationId: "listRecipes", summary: "Search all recipes" })
+    @ApiResponse({
+        status: 200,
+        description: "Recipes(s) retrieved successfully",
+        type: [RecipeView],
+    })
+    async getList(@Query() query: SearchQuery): Promise<RecipeView[]> {
+        return await getList(query.search);
+    }
+
+    @Get(":id")
+    @UseGuards(JwtAuthGuard)
+    @ApiSecurity("x-auth")
+    @Serialize(RecipeView)
+    @ApiOperation({ operationId: "getRecipe", summary: "get one recipe by id" })
+    async get(@Param("id") id: string): Promise<RecipeView> {
+        return get(id);
+    }
+  
+    @Patch(":id")
+    @UseGuards(JwtAuthGuard)
+    @ApiSecurity("x-auth")
+    @Serialize(RecipeView)
+    @ApiOperation({ operationId: "updateRecipe", summary: "Update a recipe" })
+    async update(@Param("id") id: string, @Body() body: RecipeBody): Promise<RecipeView> {
+        return update(id, body);
+    }
+  
+    @Delete(":id")
+    @UseGuards(JwtAuthGuard)
+    @ApiSecurity("x-auth")
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @ApiOperation({ operationId: "deleteRecipe", summary: "Delete recipe by id" })
+    async delete(@Param("id") id: string) {
+        await deleteRecipe(id);
+    }
+}

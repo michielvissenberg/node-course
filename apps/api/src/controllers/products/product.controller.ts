@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { ProductBody } from "../../contracts/product.body";
 import { ProductView } from "../../contracts/product.view";
 import { create } from "./handlers/create.handler";
@@ -18,7 +18,7 @@ export class ProductController {
     @ApiOperation({ operationId: "createProduct", summary: "Create a new product" })
     @ApiResponse({
         status: 201,
-        description: "User created successfully",
+        description: "Product created successfully",
         type: ProductView,
     })
     async create(@Body() body: ProductBody): Promise<ProductView> {
@@ -38,5 +38,32 @@ export class ProductController {
     })
     async getList(@Query() query: SearchQuery): Promise<ProductView[]> {
         return await getList(query.search);
+    }
+
+    @Get(":id")
+    @UseGuards(JwtAuthGuard)
+    @ApiSecurity("x-auth")
+    @Serialize(ProductView)
+    @ApiOperation({ operationId: "getProduct", summary: "get one product by id" })
+    async get(@Param("id") id: string): Promise<ProductView> {
+        return get(id);
+    }
+  
+    @Patch(":id")
+    @UseGuards(JwtAuthGuard)
+    @ApiSecurity("x-auth")
+    @Serialize(ProductView)
+    @ApiOperation({ operationId: "updateProduct", summary: "Update a product" })
+    async update(@Param("id") id: string, @Body() body: ProductBody): Promise<ProductView> {
+        return update(id, body);
+    }
+  
+    @Delete(":id")
+    @UseGuards(JwtAuthGuard)
+    @ApiSecurity("x-auth")
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @ApiOperation({ operationId: "deleteProduct", summary: "Delete product by id" })
+    async delete(@Param("id") id: string) {
+        await deleteProduct(id);
     }
 }

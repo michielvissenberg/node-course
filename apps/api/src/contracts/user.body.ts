@@ -9,6 +9,12 @@ export class UserBody {
 	@IsString()
 	@IsOptional()
 	public name: string;
+
+	@ApiProperty()
+	@Expose()
+	@IsString()
+	@IsOptional()
+	public surname: string;
 	
 	@ApiProperty()
 	@Expose()

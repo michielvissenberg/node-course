@@ -12,12 +12,14 @@ import { prisma } from "../../lib/prisma";
 
 const userFixtures = [
 	{
-		name: "test1",
+		name: "test",
+		surname: "1",
 		email: "test-user+1@panenco.com",
 		password: "password1",
 	},
 	{
-		name: "test2",
+		name: "test",
+		surname: "2",
 		email: "test-user+2@panenco.com",
 		password: "password2",
 	},
@@ -41,6 +43,7 @@ describe("Handler tests", () => {
 					return prisma.user.create({
 						data: {
 							name: fixture.name,
+							surname: fixture.surname,
 							email: fixture.email,
 							password: hashedPassword,
 						},

@@ -6,7 +6,7 @@ export const create = async (body: ProductBody) => {
     const product = await prisma.product.create({
         data: {
             name: body.name,
-            expiresAt: body.expiresAt,
+            size: body.size,
         },
     });
 
