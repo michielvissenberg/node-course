@@ -3,6 +3,12 @@ import { randomUUID } from "node:crypto";
 import { prisma } from "../../lib/prisma";
 import { expect } from "chai";
 
+import { create } from "../../controllers/recipes/handlers/create.handler";
+import { deleteRecipe } from "../../controllers/recipes/handlers/delete.handler";
+import { get } from "../../controllers/recipes/handlers/get.handler";
+import { getList } from "../../controllers/recipes/handlers/getList.handler";
+import { update } from "../../controllers/recipes/handlers/update.handler";
+
 
 const recipeFixtures = [
     {
@@ -64,7 +70,7 @@ describe("Handler tests recipe", () => {
         const res = await create(body);
 
         expect(res.name).equal("test3");
-        expect(res.size).equal("testDesc3");
+        expect(res.description).equal("testDesc3");
     });
 
     it("should update recipe", async () => {

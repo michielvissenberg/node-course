@@ -5,6 +5,11 @@ import { JwtAuthGuard } from "../../guards/jwt-auth.guard";
 import { SearchQuery } from "../../contracts/search.query";
 import { RecipeBody } from "../../contracts/recipe.body";
 import { RecipeView } from "../../contracts/recipe.view";
+import { create } from "./handlers/create.handler";
+import { getList } from "./handlers/getList.handler";
+import { get } from "./handlers/get.handler";
+import { update } from "./handlers/update.handler";
+import { deleteRecipe } from "./handlers/delete.handler";
  
 
 @Controller("recipes")

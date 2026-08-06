@@ -4,7 +4,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import type { UserBody } from "@node-course/api-sdk";
+import type { UpdateUserBody, UserBody } from "@node-course/api-sdk";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.email("Enter a valid email"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  password: z.string().optional(),
 });
 
 type UserFormValues = z.infer<typeof schema>;
@@ -27,7 +27,7 @@ export function UserForm({
   initialValues?: { name: string; email: string };
   submitLabel: string;
   pending: boolean;
-  onSubmit: (body: UserBody) => void;
+  onSubmit: (body:  UpdateUserBody) => void;
   onCancel: () => void;
 }) {
   const {
@@ -39,13 +39,15 @@ export function UserForm({
     defaultValues: {
       name: initialValues?.name ?? "",
       email: initialValues?.email ?? "",
-      password: "",
+      password: undefined,
     },
   });
 
   return (
     <form
-      onSubmit={handleSubmit((values) => onSubmit(values))}
+      onSubmit={handleSubmit((values) =>
+        onSubmit({ ...values, password: values.password === "" ? undefined : values.password })
+      )}
       className="space-y-4"
       noValidate
     >
@@ -69,9 +71,9 @@ export function UserForm({
         {errors.password && (
           <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
         )}
-        <p className="mt-1 text-xs text-slate-400">
+        {/* <p className="mt-1 text-xs text-slate-400">
           The example API requires all fields (including password) on update.
-        </p>
+        </p> */}
       </div>
       <div className="flex justify-end gap-2 pt-2">
         <Button type="button" variant="secondary" onClick={onCancel}>

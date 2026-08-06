@@ -17,10 +17,10 @@ export class FridgeView {
   @ApiProperty()
   @Expose()
   @IsNumber()
-  public floor: string;
+  public floor: number;
 
   @ApiProperty()
   @Expose()
   @IsNumber()
-  public capacity: string;
+  public capacity: number;
 }

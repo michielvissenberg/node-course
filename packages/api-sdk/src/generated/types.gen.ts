@@ -6,6 +6,7 @@ export type ClientOptions = {
 
 export type UserBody = {
     name: string;
+    surname: string;
     email: string;
     password: string;
 };
@@ -13,7 +14,14 @@ export type UserBody = {
 export type UserView = {
     id: string;
     name: string;
+    surname: string;
     email: string;
+};
+
+export type UpdateUserBody = {
+    name?: string;
+    email?: string;
+    password?: string;
 };
 
 export type LoginBody = {
@@ -28,13 +36,17 @@ export type AccessTokenView = {
 
 export type ProductBody = {
     name: string;
-    expiresAt: string;
+    size: number;
+    ownerId?: string;
+    fridgeId?: string;
 };
 
 export type ProductView = {
     id: string;
     name: string;
-    expiresAt: string;
+    size: number;
+    ownerId?: string;
+    fridgeId?: string;
 };
 
 export type ListUsersData = {
@@ -103,7 +115,7 @@ export type GetUserResponses = {
 };
 
 export type UpdateUserData = {
-    body: UserBody;
+    body: UpdateUserBody;
     path: {
         id: string;
     };
@@ -158,9 +170,50 @@ export type CreateProductData = {
 
 export type CreateProductResponses = {
     /**
-     * User created successfully
+     * Product created successfully
      */
     201: ProductView;
 };
 
 export type CreateProductResponse = CreateProductResponses[keyof CreateProductResponses];
+
+export type DeleteProductData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/products/{id}';
+};
+
+export type DeleteProductResponses = {
+    204: void;
+};
+
+export type DeleteProductResponse = DeleteProductResponses[keyof DeleteProductResponses];
+
+export type GetProductData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/products/{id}';
+};
+
+export type GetProductResponses = {
+    200: unknown;
+};
+
+export type UpdateProductData = {
+    body: ProductBody;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/products/{id}';
+};
+
+export type UpdateProductResponses = {
+    200: unknown;
+};

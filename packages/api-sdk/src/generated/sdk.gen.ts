@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateProductData, CreateProductResponses, CreateUserData, CreateUserResponses, DeleteUserData, DeleteUserResponses, GetUserData, GetUserResponses, ListProductsData, ListProductsResponses, ListUsersData, ListUsersResponses, LoginData, LoginResponses, UpdateUserData, UpdateUserResponses } from './types.gen';
+import type { CreateProductData, CreateProductResponses, CreateUserData, CreateUserResponses, DeleteProductData, DeleteProductResponses, DeleteUserData, DeleteUserResponses, GetProductData, GetProductResponses, GetUserData, GetUserResponses, ListProductsData, ListProductsResponses, ListUsersData, ListUsersResponses, LoginData, LoginResponses, UpdateProductData, UpdateProductResponses, UpdateUserData, UpdateUserResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -97,6 +97,37 @@ export const listProducts = <ThrowOnError extends boolean = false>(options?: Opt
 export const createProduct = <ThrowOnError extends boolean = false>(options: Options<CreateProductData, ThrowOnError>): RequestResult<CreateProductResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateProductResponses, unknown, ThrowOnError>({
     security: [{ name: 'x-auth', type: 'apiKey' }],
     url: '/api/products',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete product by id
+ */
+export const deleteProduct = <ThrowOnError extends boolean = false>(options: Options<DeleteProductData, ThrowOnError>): RequestResult<DeleteProductResponses, unknown, ThrowOnError> => (options.client ?? client).delete<DeleteProductResponses, unknown, ThrowOnError>({
+    security: [{ name: 'x-auth', type: 'apiKey' }],
+    url: '/api/products/{id}',
+    ...options
+});
+
+/**
+ * get one product by id
+ */
+export const getProduct = <ThrowOnError extends boolean = false>(options: Options<GetProductData, ThrowOnError>): RequestResult<GetProductResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetProductResponses, unknown, ThrowOnError>({
+    security: [{ name: 'x-auth', type: 'apiKey' }],
+    url: '/api/products/{id}',
+    ...options
+});
+
+/**
+ * Update a product
+ */
+export const updateProduct = <ThrowOnError extends boolean = false>(options: Options<UpdateProductData, ThrowOnError>): RequestResult<UpdateProductResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateProductResponses, unknown, ThrowOnError>({
+    security: [{ name: 'x-auth', type: 'apiKey' }],
+    url: '/api/products/{id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',

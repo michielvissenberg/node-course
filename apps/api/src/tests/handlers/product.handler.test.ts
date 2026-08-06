@@ -3,6 +3,12 @@ import { randomUUID } from "node:crypto";
 import { prisma } from "../../lib/prisma";
 import { expect } from "chai";
 
+import { create } from "../../controllers/products/handlers/create.handler";
+import { deleteProduct } from "../../controllers/products/handlers/delete.handler";
+import { get } from "../../controllers/products/handlers/get.handler";
+import { getList } from "../../controllers/products/handlers/getList.handler";
+import { update } from "../../controllers/products/handlers/update.handler";
+
 
 const productFixtures = [
     {
@@ -61,11 +67,13 @@ describe("Handler tests product", () => {
         const body = {
             name: "newProduct",
             size: 3,
+            ownerId: null,
+            fridgeId: null,
         };
         const res = await create(body);
 
         expect(res.name).equal("newProduct");
-        expect(res.size).equal(2);
+        expect(res.size).equal(3);
     });
 
     it("should update product", async () => {

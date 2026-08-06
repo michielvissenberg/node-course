@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { UserView } from "@node-course/api-sdk";
+import type { UpdateUserBody, UserBody, UserView } from "@node-course/api-sdk";
 import {
   useCreateUser,
   useDeleteUser,
@@ -122,16 +122,15 @@ export default function UsersPage() {
               submitLabel={editing.mode === "create" ? "Create" : "Save"}
               pending={createUser.isPending || updateUser.isPending}
               onCancel={() => setEditing(null)}
-              onSubmit={(body) => {
-                if (editing.mode === "create") {
-                  createUser.mutate(body, { onSuccess: () => setEditing(null) });
-                } else {
-                  updateUser.mutate(
+              onSubmit={editing.mode === "create" 
+                ? (body: UserBody) => 
+                  {createUser.mutate(body, { onSuccess: () => setEditing(null) });} 
+                : (body: UpdateUserBody) => 
+                  {updateUser.mutate(
                     { id: editing.user.id, body },
                     { onSuccess: () => setEditing(null) }
-                  );
-                }
-              }}
+                  );}
+              }
             />
           </Card>
         </div>

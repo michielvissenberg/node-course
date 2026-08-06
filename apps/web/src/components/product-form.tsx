@@ -3,14 +3,14 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import type { ProductBody, UserBody } from "@node-course/api-sdk";
+import type { ProductBody } from "@node-course/api-sdk";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
-  expiresAt: z.string().min(8, "Password must be at least 8 characters"),
+  expiresAt: z.string().min(1, "Expiration date is required"),
 });
 
 type ProductFormValues = z.infer<typeof schema>;

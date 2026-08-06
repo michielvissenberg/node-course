@@ -15,13 +15,13 @@ export class ProductBody {
     @IsNumber()
     public size: number;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({nullable: true})
     @Expose()
     @IsString()
     @IsOptional()
     public ownerId: String;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({nullable: true})
     @Expose()
     @IsString()
     @IsOptional()    

@@ -7,6 +7,9 @@ import { ApiOperation, ApiResponse, ApiSecurity } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../../guards/jwt-auth.guard";
 import { SearchQuery } from "../../contracts/search.query";
 import { getList } from "./handlers/getList.handler";
+import { get } from "./handlers/get.handler";
+import { update } from "./handlers/update.handler";
+import { deleteProduct } from "./handlers/delete.handler";
 
 @Controller("products")
 export class ProductController {

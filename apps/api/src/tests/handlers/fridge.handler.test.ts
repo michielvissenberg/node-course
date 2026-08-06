@@ -3,6 +3,11 @@ import { randomUUID } from "node:crypto";
 import { prisma } from "../../lib/prisma";
 import { expect } from "chai";
 
+import { create } from "../../controllers/fridges/handlers/create.handler";
+import { deleteFridge } from "../../controllers/fridges/handlers/delete.handler";
+import { get } from "../../controllers/fridges/handlers/get.handler";
+import { getList } from "../../controllers/fridges/handlers/getList.handler";
+import { update } from "../../controllers/fridges/handlers/update.handler";
 
 const fridgeFixtures = [
     {
@@ -63,8 +68,8 @@ describe("Handler tests fridge", () => {
     it("should create fridge", async () => {
         const body = {
             address: "Dennenlaan 3",
-            floor: "3",
-            capacity: "300",
+            floor: 3,
+            capacity: 300,
         };
         const res = await create(body);
 

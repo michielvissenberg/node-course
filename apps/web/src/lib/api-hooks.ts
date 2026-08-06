@@ -10,6 +10,7 @@ import {
   login,
   ProductBody,
   updateUser,
+  UpdateUserBody,
   type UserBody,
 } from "@node-course/api-sdk";
 
@@ -54,9 +55,11 @@ export function useCreateUser() {
 export function useUpdateUser() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, body }: { id: string; body: UserBody }) => {
+    mutationFn: async ({ id, body }: { id: string; body: UpdateUserBody }) => {
       const { data, error } = await updateUser({ path: { id }, body });
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
       return data!;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: USERS_KEY }),

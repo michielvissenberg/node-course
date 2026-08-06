@@ -12,13 +12,13 @@ import { prisma } from "../../lib/prisma";
 
 const userFixtures = [
 	{
-		name: "test",
+		name: "test1",
 		surname: "1",
 		email: "test-user+1@panenco.com",
 		password: "password1",
 	},
 	{
-		name: "test",
+		name: "test2",
 		surname: "2",
 		email: "test-user+2@panenco.com",
 		password: "password2",
@@ -78,6 +78,7 @@ describe("Handler tests", () => {
 			const body = {
 				email: "test-user+new@panenco.com",
 				name: "newUser",
+				surname: "User",
 				password: "reallysecretstuff",
 			};
 			const res = await create(body);

@@ -5,6 +5,11 @@ import { JwtAuthGuard } from "../../guards/jwt-auth.guard";
 import { SearchQuery } from "../../contracts/search.query";
 import { FridgeView } from "../../contracts/fridge.view";
 import { FridgeBody } from "../../contracts/fridge.body";
+import { create } from "./handlers/create.handler";
+import { getList } from "./handlers/getList.handler";
+import { get } from "./handlers/get.handler";
+import { update } from "./handlers/update.handler";
+import { deleteFridge } from "./handlers/delete.handler";
 
 @Controller("fridges")
 export class FridgeController {
