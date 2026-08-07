@@ -92,7 +92,7 @@ describe("Handler tests", () => {
 				email: "test-user+updated@panenco.com",
 			};
 			const id = users[0].id;
-			const res = await update(id, body);
+			const res = await update(id, body, id);
 
 			expect(res.email).equal(body.email);
 			expect(res.name).equal("test1");
@@ -100,7 +100,7 @@ describe("Handler tests", () => {
 
 		it("should delete user by id", async () => {
 			const initialCount = await prisma.user.count();
-			await deleteUser(users[0].id);
+			await deleteUser(users[0].id, users[0].id);
 
 			const newCount = await prisma.user.count();
 			expect(initialCount - 1).equal(newCount);

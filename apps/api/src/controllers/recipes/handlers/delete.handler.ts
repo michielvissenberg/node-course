@@ -1,7 +1,13 @@
-import { NotFoundException } from "@nestjs/common";
+import { ForbiddenException, NotFoundException } from "@nestjs/common";
 import { prisma } from "../../../lib/prisma";
 
-export const deleteRecipe = async (id: string) => {
+export const deleteRecipe = async (id: string, userId) => {
+    if (id != null) {
+        if (id !== userId) {
+            throw new ForbiddenException("cannot delete a recipe for another user");
+        }
+    }
+    
     const existingRecipe = await prisma.recipe.findUnique({
         where: { id },
     });

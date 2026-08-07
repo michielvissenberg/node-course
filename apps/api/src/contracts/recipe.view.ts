@@ -1,6 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Exclude, Expose } from "class-transformer";
-import { IsString, IsUUID } from "class-validator";
+import { IsOptional, IsString, IsUUID } from "class-validator";
 
 @Exclude()
 export class RecipeView {
@@ -19,4 +19,10 @@ export class RecipeView {
     @Expose()
     @IsString()
     public description: string;
+    
+    @ApiPropertyOptional()
+    @Expose()
+    @IsString()
+    @IsOptional()
+    public ownerId: string;
 }

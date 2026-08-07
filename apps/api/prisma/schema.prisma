@@ -17,8 +17,7 @@ model User {
   updatedAt DateTime  @updatedAt
 
   products  Product[]
-  accessTo  Fridge[]
-  knowsRecipe Recipe[]
+  recipes   Recipe[]
 
   @@map("users")
 }
@@ -38,6 +37,7 @@ model Product {
 
   @@map("products")
 }
+// maybe some flag is needed to indicate it is a recipe product 
 
 model Fridge {
   id        String    @id @default(uuid())
@@ -48,7 +48,6 @@ model Fridge {
   updatedAt DateTime  @updatedAt
 
   products  Product[]
-  users     User[]
 
   @@map("fridges")
   @@unique([address, floor])
@@ -61,8 +60,9 @@ model Recipe {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
+  owner       User?   @relation(fields: [ownerId], references: [id])
+  ownerId     String?
   ingredients Product[]
-  knownBy   User[]
 
   @@map("recipes")
 }

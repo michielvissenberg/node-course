@@ -5,11 +5,12 @@ import { create } from "./handlers/create.handler";
 import { Serialize } from "../../decorators/serialize.decorator";
 import { ApiOperation, ApiResponse, ApiSecurity } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../../guards/jwt-auth.guard";
-import { SearchQuery } from "../../contracts/search.query";
+import { SearchProductsQuery } from "../../contracts/searchProducts.query";
 import { getList } from "./handlers/getList.handler";
 import { get } from "./handlers/get.handler";
 import { update } from "./handlers/update.handler";
 import { deleteProduct } from "./handlers/delete.handler";
+import { CurrentUser } from "../../decorators/user.decorator";
 
 @Controller("products")
 export class ProductController {
@@ -24,10 +25,9 @@ export class ProductController {
         description: "Product created successfully",
         type: ProductView,
     })
-    async create(@Body() body: ProductBody): Promise<ProductView> {
-        return create(body);
+    async create(@Body() body: ProductBody, @CurrentUser("userId") userId: string): Promise<ProductView> {
+        return create(userId, body);
     }
-
 
     @Get()
     @UseGuards(JwtAuthGuard)
@@ -39,8 +39,8 @@ export class ProductController {
         description: "Product(s) retrieved successfully",
         type: [ProductView],
     })
-    async getList(@Query() query: SearchQuery): Promise<ProductView[]> {
-        return await getList(query.search);
+    async getList(@Query() query: SearchProductsQuery, @CurrentUser("userId") userId: string): Promise<ProductView[]> {
+        return await getList(userId, query.search, query.fridgeId, query.fridgeLocation);
     }
 
     @Get(":id")
@@ -57,8 +57,8 @@ export class ProductController {
     @ApiSecurity("x-auth")
     @Serialize(ProductView)
     @ApiOperation({ operationId: "updateProduct", summary: "Update a product" })
-    async update(@Param("id") id: string, @Body() body: ProductBody): Promise<ProductView> {
-        return update(id, body);
+    async update(@Param("id") id: string,  @Body() body: ProductBody, @CurrentUser("userId") userId: string): Promise<ProductView> {
+        return update(id, body, userId);
     }
   
     @Delete(":id")
@@ -66,7 +66,7 @@ export class ProductController {
     @ApiSecurity("x-auth")
     @HttpCode(HttpStatus.NO_CONTENT)
     @ApiOperation({ operationId: "deleteProduct", summary: "Delete product by id" })
-    async delete(@Param("id") id: string) {
-        await deleteProduct(id);
+    async delete(@Param("id") id: string, @CurrentUser("userId") userId: string) {
+        await deleteProduct(id, userId);
     }
 }

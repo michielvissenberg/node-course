@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateProductData, CreateProductResponses, CreateUserData, CreateUserResponses, DeleteProductData, DeleteProductResponses, DeleteUserData, DeleteUserResponses, GetProductData, GetProductResponses, GetUserData, GetUserResponses, ListProductsData, ListProductsResponses, ListUsersData, ListUsersResponses, LoginData, LoginResponses, UpdateProductData, UpdateProductResponses, UpdateUserData, UpdateUserResponses } from './types.gen';
+import type { CreateFridgeData, CreateFridgeResponses, CreateProductData, CreateProductResponses, CreateRecipeData, CreateRecipeResponses, CreateUserData, CreateUserResponses, DeleteFridgeData, DeleteFridgeResponses, DeleteProductData, DeleteProductResponses, DeleteRecipeData, DeleteRecipeResponses, DeleteUserData, DeleteUserResponses, GetFridgeData, GetFridgeResponses, GetProductData, GetProductResponses, GetRecipeData, GetRecipeResponses, GetUserData, GetUserResponses, ListFridgesData, ListFridgesResponses, ListProductsData, ListProductsResponses, ListRecipesData, ListRecipesResponses, ListUsersData, ListUsersResponses, LoginData, LoginResponses, UpdateFridgeData, UpdateFridgeResponses, UpdateProductData, UpdateProductResponses, UpdateRecipeData, UpdateRecipeResponses, UpdateUserData, UpdateUserResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -71,18 +71,6 @@ export const updateUser = <ThrowOnError extends boolean = false>(options: Option
 });
 
 /**
- * log in
- */
-export const login = <ThrowOnError extends boolean = false>(options: Options<LoginData, ThrowOnError>): RequestResult<LoginResponses, unknown, ThrowOnError> => (options.client ?? client).post<LoginResponses, unknown, ThrowOnError>({
-    url: '/api/auth/login',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
  * Search all products
  */
 export const listProducts = <ThrowOnError extends boolean = false>(options?: Options<ListProductsData, ThrowOnError>): RequestResult<ListProductsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListProductsResponses, unknown, ThrowOnError>({
@@ -128,6 +116,124 @@ export const getProduct = <ThrowOnError extends boolean = false>(options: Option
 export const updateProduct = <ThrowOnError extends boolean = false>(options: Options<UpdateProductData, ThrowOnError>): RequestResult<UpdateProductResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateProductResponses, unknown, ThrowOnError>({
     security: [{ name: 'x-auth', type: 'apiKey' }],
     url: '/api/products/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Search all fridges
+ */
+export const listFridges = <ThrowOnError extends boolean = false>(options?: Options<ListFridgesData, ThrowOnError>): RequestResult<ListFridgesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListFridgesResponses, unknown, ThrowOnError>({
+    security: [{ name: 'x-auth', type: 'apiKey' }],
+    url: '/api/fridges',
+    ...options
+});
+
+/**
+ * Create a new fridge
+ */
+export const createFridge = <ThrowOnError extends boolean = false>(options: Options<CreateFridgeData, ThrowOnError>): RequestResult<CreateFridgeResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateFridgeResponses, unknown, ThrowOnError>({
+    security: [{ name: 'x-auth', type: 'apiKey' }],
+    url: '/api/fridges',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete fridge by id
+ */
+export const deleteFridge = <ThrowOnError extends boolean = false>(options: Options<DeleteFridgeData, ThrowOnError>): RequestResult<DeleteFridgeResponses, unknown, ThrowOnError> => (options.client ?? client).delete<DeleteFridgeResponses, unknown, ThrowOnError>({
+    security: [{ name: 'x-auth', type: 'apiKey' }],
+    url: '/api/fridges/{id}',
+    ...options
+});
+
+/**
+ * get one fridge by id
+ */
+export const getFridge = <ThrowOnError extends boolean = false>(options: Options<GetFridgeData, ThrowOnError>): RequestResult<GetFridgeResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetFridgeResponses, unknown, ThrowOnError>({
+    security: [{ name: 'x-auth', type: 'apiKey' }],
+    url: '/api/fridges/{id}',
+    ...options
+});
+
+/**
+ * Update a fridge
+ */
+export const updateFridge = <ThrowOnError extends boolean = false>(options: Options<UpdateFridgeData, ThrowOnError>): RequestResult<UpdateFridgeResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateFridgeResponses, unknown, ThrowOnError>({
+    security: [{ name: 'x-auth', type: 'apiKey' }],
+    url: '/api/fridges/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Search all recipes
+ */
+export const listRecipes = <ThrowOnError extends boolean = false>(options?: Options<ListRecipesData, ThrowOnError>): RequestResult<ListRecipesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListRecipesResponses, unknown, ThrowOnError>({
+    security: [{ name: 'x-auth', type: 'apiKey' }],
+    url: '/api/recipes',
+    ...options
+});
+
+/**
+ * Create a new recipe
+ */
+export const createRecipe = <ThrowOnError extends boolean = false>(options: Options<CreateRecipeData, ThrowOnError>): RequestResult<CreateRecipeResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateRecipeResponses, unknown, ThrowOnError>({
+    security: [{ name: 'x-auth', type: 'apiKey' }],
+    url: '/api/recipes',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete recipe by id
+ */
+export const deleteRecipe = <ThrowOnError extends boolean = false>(options: Options<DeleteRecipeData, ThrowOnError>): RequestResult<DeleteRecipeResponses, unknown, ThrowOnError> => (options.client ?? client).delete<DeleteRecipeResponses, unknown, ThrowOnError>({
+    security: [{ name: 'x-auth', type: 'apiKey' }],
+    url: '/api/recipes/{id}',
+    ...options
+});
+
+/**
+ * get one recipe by id
+ */
+export const getRecipe = <ThrowOnError extends boolean = false>(options: Options<GetRecipeData, ThrowOnError>): RequestResult<GetRecipeResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetRecipeResponses, unknown, ThrowOnError>({
+    security: [{ name: 'x-auth', type: 'apiKey' }],
+    url: '/api/recipes/{id}',
+    ...options
+});
+
+/**
+ * Update a recipe
+ */
+export const updateRecipe = <ThrowOnError extends boolean = false>(options: Options<UpdateRecipeData, ThrowOnError>): RequestResult<UpdateRecipeResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateRecipeResponses, unknown, ThrowOnError>({
+    security: [{ name: 'x-auth', type: 'apiKey' }],
+    url: '/api/recipes/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * log in
+ */
+export const login = <ThrowOnError extends boolean = false>(options: Options<LoginData, ThrowOnError>): RequestResult<LoginResponses, unknown, ThrowOnError> => (options.client ?? client).post<LoginResponses, unknown, ThrowOnError>({
+    url: '/api/auth/login',
     ...options,
     headers: {
         'Content-Type': 'application/json',

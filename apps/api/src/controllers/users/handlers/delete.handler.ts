@@ -1,7 +1,13 @@
-import { NotFoundException } from "@nestjs/common";
+import { ForbiddenException, NotFoundException } from "@nestjs/common";
 import { prisma } from "../../../lib/prisma";
 
-export const deleteUser = async (id: string) => {
+export const deleteUser = async (id: string, userId) => {
+	if (id != null) {
+		if (userId !== id) {
+			throw new ForbiddenException("cannot delete another user");
+		}
+	}
+	
 	const existingUser = await prisma.user.findUnique({
 		where: { id },
 	});

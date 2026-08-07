@@ -19,11 +19,11 @@ export class ProductBody {
     @Expose()
     @IsString()
     @IsOptional()
-    public ownerId: String;
+    public ownerId?: string;
 
     @ApiPropertyOptional({nullable: true})
     @Expose()
     @IsString()
     @IsOptional()    
-    public fridgeId: String;
+    public fridgeId?: string;
 }

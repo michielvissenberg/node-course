@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiPropertyOptional } from "@nestjs/swagger";
 import { Exclude, Expose } from "class-transformer";
 import { IsEmail, IsOptional, IsString, Length } from "class-validator";
 
@@ -9,6 +9,13 @@ export class UpdateUserBody {
     @IsString()
     @IsOptional()
     public name: string;
+
+    @ApiPropertyOptional()
+    @Expose()
+    @IsString()
+    @IsOptional()
+    public surname: string;
+
     
     @ApiPropertyOptional()
     @Expose()

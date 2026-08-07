@@ -10,6 +10,7 @@ import { getList } from "./handlers/getList.handler";
 import { get } from "./handlers/get.handler";
 import { update } from "./handlers/update.handler";
 import { deleteRecipe } from "./handlers/delete.handler";
+import { CurrentUser } from "../../decorators/user.decorator";
  
 
 @Controller("recipes")
@@ -25,8 +26,8 @@ export class RecipeController {
         description: "Recipe created successfully",
         type: RecipeView,
     })
-    async create(@Body() body: RecipeBody): Promise<RecipeView> {
-        return create(body);
+    async create(@Body() body: RecipeBody, @CurrentUser("userId") userId: string): Promise<RecipeView> {
+        return create(body, userId);
     }
 
 
@@ -58,8 +59,8 @@ export class RecipeController {
     @ApiSecurity("x-auth")
     @Serialize(RecipeView)
     @ApiOperation({ operationId: "updateRecipe", summary: "Update a recipe" })
-    async update(@Param("id") id: string, @Body() body: RecipeBody): Promise<RecipeView> {
-        return update(id, body);
+    async update(@Param("id") id: string, @Body() body: RecipeBody, @CurrentUser("userId") userId: string): Promise<RecipeView> {
+        return update(id, body, userId);
     }
   
     @Delete(":id")
@@ -67,7 +68,7 @@ export class RecipeController {
     @ApiSecurity("x-auth")
     @HttpCode(HttpStatus.NO_CONTENT)
     @ApiOperation({ operationId: "deleteRecipe", summary: "Delete recipe by id" })
-    async delete(@Param("id") id: string) {
-        await deleteRecipe(id);
+    async delete(@Param("id") id: string, @CurrentUser("userId") userId: string) {
+        await deleteRecipe(id, userId);
     }
 }

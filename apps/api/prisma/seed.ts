@@ -25,12 +25,7 @@ async function main() {
 						{name: "bolognese sauce", size: 0.5},
 					]
 				},
-				accessTo: {
-					create: [
-						{address: "Dennenlaan 2", floor: 1, capacity: 600}
-					]
-				},
-				knowsRecipe: {
+				recipes: {
 					create: [
 						{name: "spaghetti bolognese", description: "cook the pasta and add the warmed up bolognese sauce", ingredients: {
 							create: [{name: "spaghetti", size: 0.5}]
@@ -52,34 +47,25 @@ async function main() {
 						{name: "cola can", size: 0.33}
 					]
 				},
-				accessTo: {
-					create: [
-						{address: "Dennenlaan 1", floor: 0, capacity: 700}
-					]
-				}
 			},
 		}),
 	]);
-	const updated = await prisma.user.update({
-			where: {email: "jane@example.com"},
-			data: {
-				accessTo: { connect: [
-					{id: (await prisma.fridge.findFirst(
-						{where: {address: "Dennenlaan 2"}}
-					))!.id}
-				]}
-			}
-		})
 
-	console.log("Seeded users:", users, updated);
-	
+	console.log("Seeded users:", users);
 
 	const fridges = await Promise.all([
-		prisma.fridge.update({
-			where: {id: (await prisma.fridge.findFirst(
-						{where: {address: "Dennenlaan 2"}}
-					))!.id},
+		prisma.fridge.create({
 			data: {
+				address: "Dennenlaan 1",
+				floor: 1,
+				capacity: 500,
+			}
+		}),
+		prisma.fridge.create({
+			data: {
+				address: "Dennenlaan 2",
+				floor: 2,
+				capacity: 600,
 				products: { connect: [
 					{id: (await prisma.product.findFirst(
 						{where: {name: "pear"}}
@@ -95,7 +81,7 @@ async function main() {
 					))!.id},
 				]}
 			}
-		})
+		}),
 	]);
 
 	console.log("Seeded fridges:", fridges);

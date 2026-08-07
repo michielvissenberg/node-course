@@ -1,8 +1,14 @@
-import { NotFoundException } from "@nestjs/common";
+import { ForbiddenException, NotFoundException } from "@nestjs/common";
 import { prisma } from "../../../lib/prisma";
 import bcrypt from "bcryptjs";
 
-export const update = async (id: string, body) => {
+export const update = async (id: string, body, userId) => {
+	if (id != null) {
+		if (userId !== id) {
+			throw new ForbiddenException("cannot update another user's credentials");
+		}
+	}
+	
 	const user = await prisma.user.findUnique({
 		where: { id },
 	});

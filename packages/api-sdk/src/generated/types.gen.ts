@@ -20,8 +20,50 @@ export type UserView = {
 
 export type UpdateUserBody = {
     name?: string;
+    surname?: string;
     email?: string;
     password?: string;
+};
+
+export type ProductBody = {
+    name: string;
+    size: number;
+    ownerId?: string | null;
+    fridgeId?: string | null;
+};
+
+export type ProductView = {
+    id: string;
+    name: string;
+    size: number;
+    ownerId?: string;
+    fridgeId?: string;
+};
+
+export type FridgeBody = {
+    address: string;
+    floor: number;
+    capacity: number;
+};
+
+export type FridgeView = {
+    id: string;
+    address: string;
+    floor: number;
+    capacity: number;
+};
+
+export type RecipeBody = {
+    name: string;
+    description: string;
+    ownerId?: string | null;
+};
+
+export type RecipeView = {
+    id: string;
+    name: string;
+    description: string;
+    ownerId?: string;
 };
 
 export type LoginBody = {
@@ -32,21 +74,6 @@ export type LoginBody = {
 export type AccessTokenView = {
     token: string;
     expiresIn: number;
-};
-
-export type ProductBody = {
-    name: string;
-    size: number;
-    ownerId?: string;
-    fridgeId?: string;
-};
-
-export type ProductView = {
-    id: string;
-    name: string;
-    size: number;
-    ownerId?: string;
-    fridgeId?: string;
 };
 
 export type ListUsersData = {
@@ -127,19 +154,6 @@ export type UpdateUserResponses = {
     200: unknown;
 };
 
-export type LoginData = {
-    body: LoginBody;
-    path?: never;
-    query?: never;
-    url: '/api/auth/login';
-};
-
-export type LoginResponses = {
-    default: AccessTokenView;
-};
-
-export type LoginResponse = LoginResponses[keyof LoginResponses];
-
 export type ListProductsData = {
     body?: never;
     path?: never;
@@ -148,6 +162,14 @@ export type ListProductsData = {
          * Filter users by name or email
          */
         search?: string;
+        /**
+         * Filter by given fridge
+         */
+        fridgeId?: string;
+        /**
+         * Filter by given location for fridges
+         */
+        fridgeLocation?: string;
     };
     url: '/api/products';
 };
@@ -217,3 +239,172 @@ export type UpdateProductData = {
 export type UpdateProductResponses = {
     200: unknown;
 };
+
+export type ListFridgesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Filter users by name or email
+         */
+        search?: string;
+    };
+    url: '/api/fridges';
+};
+
+export type ListFridgesResponses = {
+    /**
+     * Fridges(s) retrieved successfully
+     */
+    200: Array<FridgeView>;
+};
+
+export type ListFridgesResponse = ListFridgesResponses[keyof ListFridgesResponses];
+
+export type CreateFridgeData = {
+    body: FridgeBody;
+    path?: never;
+    query?: never;
+    url: '/api/fridges';
+};
+
+export type CreateFridgeResponses = {
+    /**
+     * Fridge created successfully
+     */
+    201: FridgeView;
+};
+
+export type CreateFridgeResponse = CreateFridgeResponses[keyof CreateFridgeResponses];
+
+export type DeleteFridgeData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/fridges/{id}';
+};
+
+export type DeleteFridgeResponses = {
+    204: void;
+};
+
+export type DeleteFridgeResponse = DeleteFridgeResponses[keyof DeleteFridgeResponses];
+
+export type GetFridgeData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/fridges/{id}';
+};
+
+export type GetFridgeResponses = {
+    200: unknown;
+};
+
+export type UpdateFridgeData = {
+    body: FridgeBody;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/fridges/{id}';
+};
+
+export type UpdateFridgeResponses = {
+    200: unknown;
+};
+
+export type ListRecipesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Filter users by name or email
+         */
+        search?: string;
+    };
+    url: '/api/recipes';
+};
+
+export type ListRecipesResponses = {
+    /**
+     * Recipes(s) retrieved successfully
+     */
+    200: Array<RecipeView>;
+};
+
+export type ListRecipesResponse = ListRecipesResponses[keyof ListRecipesResponses];
+
+export type CreateRecipeData = {
+    body: RecipeBody;
+    path?: never;
+    query?: never;
+    url: '/api/recipes';
+};
+
+export type CreateRecipeResponses = {
+    /**
+     * Recipe created successfully
+     */
+    201: RecipeView;
+};
+
+export type CreateRecipeResponse = CreateRecipeResponses[keyof CreateRecipeResponses];
+
+export type DeleteRecipeData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/recipes/{id}';
+};
+
+export type DeleteRecipeResponses = {
+    204: void;
+};
+
+export type DeleteRecipeResponse = DeleteRecipeResponses[keyof DeleteRecipeResponses];
+
+export type GetRecipeData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/recipes/{id}';
+};
+
+export type GetRecipeResponses = {
+    200: unknown;
+};
+
+export type UpdateRecipeData = {
+    body: RecipeBody;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/recipes/{id}';
+};
+
+export type UpdateRecipeResponses = {
+    200: unknown;
+};
+
+export type LoginData = {
+    body: LoginBody;
+    path?: never;
+    query?: never;
+    url: '/api/auth/login';
+};
+
+export type LoginResponses = {
+    default: AccessTokenView;
+};
+
+export type LoginResponse = LoginResponses[keyof LoginResponses];

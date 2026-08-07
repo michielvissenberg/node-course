@@ -1,18 +1,20 @@
-import { create } from "./handlers/create.handler";
-import { get } from "./handlers/get.handler";
-import { getList } from "./handlers/getList.handler";
-import { update } from "./handlers/update.handler";
-import { deleteUser } from "./handlers/delete.handler";
-
-import { Body, Controller, Post, Get, Patch, Delete, Query, Param, HttpCode, HttpStatus, UseGuards } from "@nestjs/common";
-import { ApiOperation, ApiResponse, ApiSecurity} from "@nestjs/swagger";
-
 import { UserBody } from "../../contracts/user.body";
 import { SearchQuery } from "../../contracts/search.query";
 import { Serialize } from "../../decorators/serialize.decorator";
 import { UserView } from "../../contracts/user.view";
 import { JwtAuthGuard } from "../../guards/jwt-auth.guard";
 import { UpdateUserBody } from "../../contracts/update-user.body";
+
+import { Body, Controller, Post, Get, Patch, Delete, Query, Param, HttpCode, HttpStatus, UseGuards } from "@nestjs/common";
+import { ApiOperation, ApiResponse, ApiSecurity} from "@nestjs/swagger";
+
+import { create } from "./handlers/create.handler";
+import { get } from "./handlers/get.handler";
+import { getList } from "./handlers/getList.handler";
+import { update } from "./handlers/update.handler";
+import { deleteUser } from "./handlers/delete.handler";
+import { CurrentUser } from "../../decorators/user.decorator";
+
 
 @Controller("users")
 export class UserController {
@@ -57,8 +59,8 @@ export class UserController {
 	@ApiSecurity("x-auth")
 	@Serialize(UserView)
 	@ApiOperation({ operationId: "updateUser", summary: "Update a user" })
-	async update(@Param("id") id: string, @Body() body: UpdateUserBody): Promise<UserView> {
-		return update(id, body);
+	async update(@Param("id") id: string, @Body() body: UpdateUserBody, @CurrentUser("userId") userId: string): Promise<UserView> {
+		return update(id, body, userId);
 	}
 
 	@Delete(":id")
@@ -66,7 +68,7 @@ export class UserController {
 	@ApiSecurity("x-auth")
 	@HttpCode(HttpStatus.NO_CONTENT)
 	@ApiOperation({ operationId: "deleteUser", summary: "Delete user by id" })
-	async delete(@Param("id") id: string) {
-		await deleteUser(id);
+	async delete(@Param("id") id: string, @CurrentUser("userId") userId: string) {
+		await deleteUser(id, userId);
 	}
 }

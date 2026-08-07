@@ -67,10 +67,8 @@ describe("Handler tests product", () => {
         const body = {
             name: "newProduct",
             size: 3,
-            ownerId: null,
-            fridgeId: null,
         };
-        const res = await create(body);
+        const res = await create("1", body);
 
         expect(res.name).equal("newProduct");
         expect(res.size).equal(3);
@@ -81,7 +79,7 @@ describe("Handler tests product", () => {
             size: 3,
         };
         const id = products[0].id;
-        const res = await update(id, body);
+        const res = await update(id, body, "1");
 
         expect(res.size).equal(body.size);
         expect(res.name).equal("test1");
@@ -89,7 +87,7 @@ describe("Handler tests product", () => {
 
     it("should delete product by id", async () => {
         const initialCount = await prisma.product.count();
-        await deleteProduct(products[0].id);
+        await deleteProduct(products[0].id, "1");
 
         const newCount = await prisma.product.count();
         expect(initialCount - 1).equal(newCount);

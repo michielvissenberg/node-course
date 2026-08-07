@@ -67,7 +67,7 @@ describe("Handler tests recipe", () => {
             name: "test3",
             description: "testDesc3",
         };
-        const res = await create(body);
+        const res = await create(body, "1");
 
         expect(res.name).equal("test3");
         expect(res.description).equal("testDesc3");
@@ -78,7 +78,7 @@ describe("Handler tests recipe", () => {
             description: "testDesc0",
         };
         const id = recipes[0].id;
-        const res = await update(id, body);
+        const res = await update(id, body, id);
 
         expect(res.description).equal(body.description);
         expect(res.name).equal("test1");
@@ -86,7 +86,7 @@ describe("Handler tests recipe", () => {
 
     it("should delete recipe by id", async () => {
         const initialCount = await prisma.recipe.count();
-        await deleteRecipe(recipes[0].id);
+        await deleteRecipe(recipes[0].id, recipes[0].id);
 
         const newCount = await prisma.recipe.count();
         expect(initialCount - 1).equal(newCount);

@@ -24,11 +24,11 @@ export class ProductView {
     @Expose()
     @IsString()
     @IsOptional()
-    public ownerId: String;
+    public ownerId: string;
 
     @ApiPropertyOptional()
     @Expose()
     @IsString()
     @IsOptional()    
-    public fridgeId: String;
+    public fridgeId: string;
 }
