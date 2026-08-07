@@ -2,18 +2,18 @@ import { ForbiddenException, NotFoundException } from "@nestjs/common";
 import { prisma } from "../../../lib/prisma";
 
 export const update = async (id: string, body, userId) => {
-    if (id !== null) { 
-        if (userId !== id) {
-            throw new ForbiddenException("cannot change another user's recipes");
-        }
-    }
-
     const recipe = await prisma.recipe.findUnique({
         where: { id },
     });
 
     if (!recipe) {
         throw new NotFoundException("Recipe not found");
+    }
+
+    if (recipe.ownerId !== null) { 
+        if (userId !== recipe.ownerId) {
+            throw new ForbiddenException("cannot change another user's recipes");
+        }
     }
     
     const updateData: any = {};

@@ -1,22 +1,25 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Exclude, Expose } from "class-transformer";
-import { IsNumber, IsString } from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 
 @Exclude()
 export class FridgeBody {
-    @ApiProperty()
+    @ApiPropertyOptional()
     @Expose()
     @IsString()
+    @IsOptional()
     public address: string;
     
-    @ApiProperty()
+    @ApiPropertyOptional()
     @Expose()
     @IsNumber()
+    @IsOptional()
     public floor: number;
 
-    @ApiProperty()
+    @ApiPropertyOptional()
     @Expose()
     @IsNumber()
+    @IsOptional()
     public capacity: number;
 
 }

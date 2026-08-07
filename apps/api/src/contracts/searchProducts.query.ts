@@ -4,7 +4,7 @@ import { IsString, IsOptional } from "class-validator";
 
 @Exclude()
 export class SearchProductsQuery {
-	@ApiPropertyOptional({ description: "Filter users by name or email" })
+	@ApiPropertyOptional({ description: "Filter products" })
 	@Expose()
 	@IsString()
 	@IsOptional()

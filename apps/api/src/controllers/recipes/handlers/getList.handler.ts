@@ -16,6 +16,12 @@ export const getList = async (search?: string) => {
                             mode: "insensitive" as const,
                         },
                     },
+                    {
+                        ownerId: {
+                            contains: search,
+                            mode: "insensitive" as const,
+                        }
+                    }
                 ],
           }
         : {};
