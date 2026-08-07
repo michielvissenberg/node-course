@@ -2,20 +2,16 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  createProduct,
   createUser,
   deleteUser,
-  listProducts,
   listUsers,
   login,
-  ProductBody,
   updateUser,
   UpdateUserBody,
   type UserBody,
 } from "@node-course/api-sdk";
 
 const USERS_KEY = ["users"];
-const PRODUCT_KEY = ["product"];
 
 export function useUsers(search: string) {
   return useQuery({
@@ -74,30 +70,5 @@ export function useDeleteUser() {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: USERS_KEY }),
-  });
-}
-
-export function useCreateProduct() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (body: ProductBody) => {
-      const { data, error } = await createProduct({ body });
-      if (error) throw error;
-      return data!;
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: PRODUCT_KEY }),
-  });
-}
-
-export function useProducts(search: string) {
-  return useQuery({
-    queryKey: [...PRODUCT_KEY, search],
-    queryFn: async () => {
-      const { data, error } = await listProducts({
-        query: search ? { search } : undefined,
-      });
-      if (error) throw error;
-      return data ?? [];
-    },
   });
 }

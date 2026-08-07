@@ -9,7 +9,7 @@ import {
   useDeleteUser,
   useUpdateUser,
   useUsers,
-} from "@/lib/api-hooks";
+} from "@/lib/api-hooks.user";
 import { clearToken, isAuthenticated } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";

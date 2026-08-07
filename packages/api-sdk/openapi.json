@@ -39,7 +39,7 @@
             "name": "search",
             "required": false,
             "in": "query",
-            "description": "Filter users by name or email",
+            "description": "Filter",
             "schema": {
               "type": "string"
             }
@@ -207,7 +207,7 @@
             "name": "search",
             "required": false,
             "in": "query",
-            "description": "Filter users by name or email",
+            "description": "Filter products",
             "schema": {
               "type": "string"
             }
@@ -393,7 +393,7 @@
             "name": "search",
             "required": false,
             "in": "query",
-            "description": "Filter users by name or email",
+            "description": "Filter",
             "schema": {
               "type": "string"
             }
@@ -561,7 +561,7 @@
             "name": "search",
             "required": false,
             "in": "query",
-            "description": "Filter users by name or email",
+            "description": "Filter",
             "schema": {
               "type": "string"
             }
@@ -817,11 +817,7 @@
             "type": "string",
             "nullable": true
           }
-        },
-        "required": [
-          "name",
-          "size"
-        ]
+        }
       },
       "ProductView": {
         "type": "object",
@@ -861,12 +857,7 @@
           "capacity": {
             "type": "number"
           }
-        },
-        "required": [
-          "address",
-          "floor",
-          "capacity"
-        ]
+        }
       },
       "FridgeView": {
         "type": "object",
@@ -905,11 +896,7 @@
             "type": "string",
             "nullable": true
           }
-        },
-        "required": [
-          "name",
-          "description"
-        ]
+        }
       },
       "RecipeView": {
         "type": "object",

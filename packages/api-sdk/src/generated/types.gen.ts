@@ -26,8 +26,8 @@ export type UpdateUserBody = {
 };
 
 export type ProductBody = {
-    name: string;
-    size: number;
+    name?: string;
+    size?: number;
     ownerId?: string | null;
     fridgeId?: string | null;
 };
@@ -41,9 +41,9 @@ export type ProductView = {
 };
 
 export type FridgeBody = {
-    address: string;
-    floor: number;
-    capacity: number;
+    address?: string;
+    floor?: number;
+    capacity?: number;
 };
 
 export type FridgeView = {
@@ -54,8 +54,8 @@ export type FridgeView = {
 };
 
 export type RecipeBody = {
-    name: string;
-    description: string;
+    name?: string;
+    description?: string;
     ownerId?: string | null;
 };
 
@@ -81,7 +81,7 @@ export type ListUsersData = {
     path?: never;
     query?: {
         /**
-         * Filter users by name or email
+         * Filter
          */
         search?: string;
     };
@@ -159,7 +159,7 @@ export type ListProductsData = {
     path?: never;
     query?: {
         /**
-         * Filter users by name or email
+         * Filter products
          */
         search?: string;
         /**
@@ -245,7 +245,7 @@ export type ListFridgesData = {
     path?: never;
     query?: {
         /**
-         * Filter users by name or email
+         * Filter
          */
         search?: string;
     };
@@ -323,7 +323,7 @@ export type ListRecipesData = {
     path?: never;
     query?: {
         /**
-         * Filter users by name or email
+         * Filter
          */
         search?: string;
     };

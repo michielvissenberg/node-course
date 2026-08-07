@@ -6,7 +6,7 @@ import type { ProductBody, ProductView } from "@node-course/api-sdk";
 import {
   useProducts,
   useCreateProduct,
-} from "@/lib/api-hooks";
+} from "@/lib/api-hooks.user";
 import { clearToken, isAuthenticated } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
