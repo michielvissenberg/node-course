@@ -14,9 +14,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { RecipeForm } from "@/components/recipe-form";
+import { MissingIngredients } from "@/components/missing-ingredients";
 
 type Editing = { mode: "create" } | { mode: "edit"; recipe: RecipeView } | null;
-type Viewing = { recipe: RecipeView } | false;
+type Viewing = { mode: "view"; recipe: RecipeView } | {mode: "ingredients"; recipe: RecipeView} | false;
 
 export default function RecipesPage() {
   const router = useRouter();
@@ -24,7 +25,7 @@ export default function RecipesPage() {
   const [search, setSearch] = useState("");
   const [editing, setEditing] = useState<Editing>(null);
   const [viewing, setViewing] = useState<Viewing>(false);
-  
+
   const id = getId()
 
   useEffect(() => {
@@ -100,7 +101,7 @@ export default function RecipesPage() {
             <div className="flex gap-2">
               <Button
                 variant="secondary"
-                onClick={() => setViewing({recipe})}
+                onClick={() => setViewing({mode: "view", recipe: recipe})}
               >
                 View
               </Button>
@@ -168,7 +169,7 @@ export default function RecipesPage() {
           </Card>
         </div>
       )}
-      {viewing && (
+      {viewing && viewing.mode == "view" && (
         <div className="fixed inset-0 flex items-center justify-center bg-slate-900/40 p-4">
           <Card className="w-full max-w-md p-6">
             <h2 className="mb-4 text-lg font-semibold">
@@ -182,13 +183,30 @@ export default function RecipesPage() {
                 )}
               </ul>
               <div className="mt-2 flex justify-between">
-                <Button variant="secondary">
+                <Button variant="secondary" onClick={() => {
+                    setViewing({mode: "ingredients", recipe: viewing.recipe});
+                  }}>
                   show needed ingredients
                 </Button>
                 <Button onClick={() => setViewing(false)}>
                   back
                 </Button>
               </div>
+          </Card>
+        </div>
+      )}
+      {viewing && viewing.mode == "ingredients" && (
+        <div className="fixed inset-0 flex items-center justify-center bg-slate-900/40 p-4">
+          <Card className="w-full max-w-md p-6">
+            <h2 className="mb-4 text-lg font-semibold">
+              Ingredients for {viewing.recipe.name}
+            </h2>
+            <MissingIngredients 
+              recipe={viewing.recipe} 
+              onCancel={() => {
+                setViewing({mode: "view", recipe: viewing.recipe});
+              }}
+            />
           </Card>
         </div>
       )}

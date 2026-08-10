@@ -172,6 +172,10 @@ export type ListProductsData = {
          * Filter by given location for fridges
          */
         fridgeLocation?: string;
+        /**
+         * Filter by ownerId
+         */
+        ownerId?: string;
     };
     url: '/api/products';
 };

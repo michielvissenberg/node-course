@@ -40,7 +40,7 @@ export class ProductController {
         type: [ProductView],
     })
     async getList(@Query() query: SearchProductsQuery, @CurrentUser("userId") userId: string): Promise<ProductView[]> {
-        return await getList(userId, query.search, query.fridgeId, query.fridgeLocation);
+        return await getList(userId, query.search, query.fridgeId, query.fridgeLocation, query.ownerId);
     }
 
     @Get(":id")

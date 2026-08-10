@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { deleteProduct, ProductBody, type ProductView } from "@node-course/api-sdk";
+import { ProductBody, type ProductView } from "@node-course/api-sdk";
 import {
   useCreateProduct,
   useDeleteProduct,

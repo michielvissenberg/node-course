@@ -127,14 +127,13 @@ export default function UsersPage() {
               submitLabel={editing.mode === "create" ? "Create" : "Save"}
               pending={createUser.isPending || updateUser.isPending}
               onCancel={() => setEditing(null)}
-              onSubmit={editing.mode === "create" 
-                ? (body: UserBody) => 
-                  {createUser.mutate(body, { onSuccess: () => setEditing(null) });} 
-                : (body: UpdateUserBody) => 
-                  {updateUser.mutate(
-                    { id: editing.user.id, body },
-                    { onSuccess: () => setEditing(null) }
-                  );}
+              onSubmit={(body: UpdateUserBody) => {
+                const options = { onSuccess: () => setEditing(null) };
+                if (editing.mode === "create") {
+                  createUser.mutate(body as UserBody, options);
+                } else {
+                  updateUser.mutate({ id: editing.user.id, body }, options);
+                }}
               }
             />
           </Card>

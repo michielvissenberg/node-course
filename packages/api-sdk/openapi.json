@@ -229,6 +229,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "ownerId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by ownerId",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {

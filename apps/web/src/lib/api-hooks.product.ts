@@ -11,7 +11,7 @@ import {
 
 const PRODUCT_KEY = ["product"];
 
-export function useProducts(search?: string, fridgeId?: string, fridgeLocation?: string) {
+export function useProducts(search?: string, fridgeId?: string, fridgeLocation?: string, ownerId?: string) {
   return useQuery({
     queryKey: [...PRODUCT_KEY, {search, fridgeId, fridgeLocation}],
     queryFn: async () => {
@@ -19,6 +19,7 @@ export function useProducts(search?: string, fridgeId?: string, fridgeLocation?:
         ...(search && { search }),
         ...(fridgeId && { fridgeId }),
         ...(fridgeLocation && { fridgeLocation }),
+        ...(ownerId && { ownerId }),
       }
       const { data, error } = await listProducts({
         query: Object.keys(queryParams).length ? queryParams : undefined,

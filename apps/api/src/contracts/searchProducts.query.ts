@@ -22,4 +22,10 @@ export class SearchProductsQuery {
 	@IsOptional()
 	public fridgeLocation?: string
 
+	@ApiPropertyOptional({ description: "Filter by ownerId" })
+	@Expose()
+	@IsString()
+	@IsOptional()
+	public ownerId?: string
+
 }
