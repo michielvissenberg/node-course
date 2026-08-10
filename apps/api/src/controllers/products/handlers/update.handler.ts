@@ -1,10 +1,10 @@
-import { ForbiddenException, NotFoundException } from "@nestjs/common";
+import { ForbiddenException, ImATeapotException, NotFoundException } from "@nestjs/common";
 import { prisma } from "../../../lib/prisma";
+
 
 export const update = async (id: string, body, userId) => {
     const productOwnerId = (await prisma.product.findUnique({where: {id}})).ownerId;
     if (productOwnerId != null) {
-        console.log(body.ownerId);
         if (userId !== productOwnerId) {
             throw new ForbiddenException("cannot update a product for another user");
         }
@@ -17,7 +17,19 @@ export const update = async (id: string, body, userId) => {
     if (!product) {
         throw new NotFoundException("Product not found");
     }
-    
+
+    if (body.fridgeId) {
+        const fridge = await prisma.fridge.findUnique({where: {id: body.fridgeId}})
+        if (fridge) {
+            const products = await prisma.product.findMany({where: {fridgeId: fridge.id}})
+            let totalSize = 0;
+            products.map((product) => {
+                if (product.id != id) totalSize += product.size;
+            })
+            if (totalSize + body.size > fridge.capacity) throw new ImATeapotException("Fridge too small")
+        }
+    }
+
     const updateData: any = {};
     if (body.name !== undefined) updateData.name = body.name;
     if (body.size !== undefined) updateData.size = body.size;

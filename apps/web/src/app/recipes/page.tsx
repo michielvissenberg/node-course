@@ -51,7 +51,7 @@ export default function RecipesPage() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-10">
       <header className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Recipes</h1>
+        <h1 className="text-2xl font-semibold mr-4">Recipes</h1>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={() => router.replace("/fridges")}>
             Browse fridges

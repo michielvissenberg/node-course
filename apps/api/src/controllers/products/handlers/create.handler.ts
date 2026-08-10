@@ -1,4 +1,4 @@
-import { ForbiddenException, NotFoundException } from "@nestjs/common";
+import { ForbiddenException, ImATeapotException, NotFoundException } from "@nestjs/common";
 import { ProductBody } from "../../../contracts/product.body";
 import { prisma } from "../../../lib/prisma";
 
@@ -35,5 +35,19 @@ export const create = async (userId: string, body: ProductBody) => {
         data: data,
     });
 
+    if (product.fridgeId) {
+        const fridge = await prisma.fridge.findUnique({where: {id: product.fridgeId}})
+        if (fridge) {
+            const products = await prisma.product.findMany({where: {fridgeId: fridge.id}})
+            let totalSize = 0;
+            products.map((product) => {
+                totalSize += product.size;
+            })
+            if (totalSize > fridge.capacity) {
+                prisma.product.delete({where: {id: product.id} })
+                throw new ImATeapotException("Fridge too small")
+            }
+        }
+    }
     return product;
 };

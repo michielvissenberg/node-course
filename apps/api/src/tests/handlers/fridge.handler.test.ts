@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import { prisma } from "../../lib/prisma";
 import { expect } from "chai";
 
-import { create } from "../../controllers/fridges/handlers/create.handler";
+import { createFridge } from "../../controllers/fridges/handlers/create.handler";
 import { deleteFridge } from "../../controllers/fridges/handlers/delete.handler";
 import { get } from "../../controllers/fridges/handlers/get.handler";
 import { getList } from "../../controllers/fridges/handlers/getList.handler";
@@ -71,7 +71,7 @@ describe("Handler tests fridge", () => {
             floor: 3,
             capacity: 300,
         };
-        const res = await create(body);
+        const res = await createFridge(body);
 
         expect(res.address).equal("Dennenlaan 3");
         expect(res.floor).equal(3);

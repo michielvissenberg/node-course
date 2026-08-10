@@ -5,7 +5,7 @@ import { JwtAuthGuard } from "../../guards/jwt-auth.guard";
 import { SearchQuery } from "../../contracts/search.query";
 import { FridgeView } from "../../contracts/fridge.view";
 import { FridgeBody } from "../../contracts/fridge.body";
-import { create } from "./handlers/create.handler";
+import { createFridge } from "./handlers/create.handler";
 import { getList } from "./handlers/getList.handler";
 import { get } from "./handlers/get.handler";
 import { update } from "./handlers/update.handler";
@@ -25,7 +25,7 @@ export class FridgeController {
         type: FridgeView,
     })
     async create(@Body() body: FridgeBody): Promise<FridgeView> {
-        return create(body);
+        return createFridge(body);
     }
 
 

@@ -8,7 +8,7 @@ import { deleteProduct } from "../../controllers/products/handlers/delete.handle
 import { get } from "../../controllers/products/handlers/get.handler";
 import { getList } from "../../controllers/products/handlers/getList.handler";
 import { update } from "../../controllers/products/handlers/update.handler";
-
+import { createFridge} from "../../controllers/fridges/handlers/create.handler";
 
 const productFixtures = [
     {
@@ -27,6 +27,7 @@ describe("Handler tests product", () => {
     beforeEach(async () => {
         // Clean up database
         await prisma.product.deleteMany();
+        await prisma.fridge.deleteMany();
 
         // Create test products
         products = await Promise.all(
@@ -92,5 +93,27 @@ describe("Handler tests product", () => {
         const newCount = await prisma.product.count();
         expect(initialCount - 1).equal(newCount);
     });
+
+    it("should fail when putting too large product in fridge", async () => {
+        const fridge = await createFridge({address: "a", capacity: 1, floor: 1})
+        try {
+            await create("1", {name: "test", size: 2, fridgeId: fridge.id})
+        } catch (error: any) {
+            expect(error.message).equal("Fridge too small")
+            return
+        }
+        expect(true, "should have thrown an error").false;
+    })
+    it("should fail when updating too large product into fridge", async () => {
+        const fridge = await createFridge({address: "a", capacity: 1, floor: 1})
+        try {
+            const id = products[0].id;
+            await update(id, {name: "test1", size: 1.1, fridgeId: fridge.id}, "1");
+        } catch (error: any) {
+            expect(error.message).equal("Fridge too small")
+            return
+        }
+        expect(true, "should have thrown an error").false;
+    })
 
 });
