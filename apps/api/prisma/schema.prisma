@@ -33,7 +33,6 @@ model Product {
   ownerId   String?
   fridge    Fridge?    @relation(fields: [fridgeId], references: [id]) 
   fridgeId  String?
-  recipes   Recipe[]
 
   @@map("products")
 }
@@ -57,12 +56,12 @@ model Recipe {
   id        String    @id @default(uuid())
   name      String  
   description String
+  ingredients String[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
   owner       User?   @relation(fields: [ownerId], references: [id])
   ownerId     String?
-  ingredients Product[]
 
   @@map("recipes")
 }

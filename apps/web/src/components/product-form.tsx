@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
-  expiresAt: z.string().min(1, "Expiration date is required"),
+  size: z.number(),
 });
 
 type ProductFormValues = z.infer<typeof schema>;
@@ -22,7 +22,7 @@ export function ProductForm({
   onSubmit,
   onCancel,
 }: {
-  initialValues?: { name: string; expiresAt: string };
+  initialValues?: { name: string; size: number };
   submitLabel: string;
   pending: boolean;
   onSubmit: (body: ProductBody) => void;
@@ -36,7 +36,7 @@ export function ProductForm({
     resolver: zodResolver(schema),
     defaultValues: {
       name: initialValues?.name ?? "",
-      expiresAt: initialValues?.expiresAt ?? "",
+      size: initialValues?.size ?? 0,
     },
   });
 
@@ -54,14 +54,11 @@ export function ProductForm({
         )}
       </div>
       <div>
-        <Label htmlFor="date">Expiration date</Label>
-        <Input id="expiresAt" type="expiresAt" {...register("expiresAt")} />
-        {errors.expiresAt && (
-          <p className="mt-1 text-sm text-red-600">{errors.expiresAt.message}</p>
+        <Label htmlFor="size">size</Label>
+        <Input id="size" {...register("size", {valueAsNumber: true})} />
+        {errors.size && (
+          <p className="mt-1 text-sm text-red-600">{errors.size.message}</p>
         )}
-        {/* <p className="mt-1 text-xs text-slate-400">
-          The example API requires all fields on update.
-        </p> */}
       </div>
       <div className="flex justify-end gap-2 pt-2">
         <Button type="button" variant="secondary" onClick={onCancel}>

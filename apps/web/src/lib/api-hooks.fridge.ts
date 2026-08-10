@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createFridge,
   deleteFridge,
+  getFridge,
   listFridges,
   updateFridge,
   type FridgeBody,
@@ -11,7 +12,7 @@ import {
 
 const FRIDGES_KEY = ["fridges"];
 
-export function useFridges(search: string) {
+export function useFridges(search?: string) {
   return useQuery({
     queryKey: [...FRIDGES_KEY, search],
     queryFn: async () => {
@@ -23,6 +24,17 @@ export function useFridges(search: string) {
     },
   });
 }
+
+// export function useGetFridge(id: string) {
+//   return useQuery({
+//     queryKey: [...FRIDGES_KEY, id],
+//     queryFn: async () => {
+//       const { data, error } = await getFridge({ path: {id}});
+//       if (error) throw error;
+//       return data;
+//     },
+//   })
+// }
 
 export function useCreateFridge() {
   const queryClient = useQueryClient();

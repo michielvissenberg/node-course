@@ -20,6 +20,9 @@ export const create = async (body: RecipeBody, userId) => {
             throw new NotFoundException("Owner not found");
         }
     }
+    if (body.ingredients != null) {
+        data.ingredients = body.ingredients.slice();
+    }
 
     const recipe = await prisma.recipe.create({
         data: data,

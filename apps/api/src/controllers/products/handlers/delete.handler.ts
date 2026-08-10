@@ -11,7 +11,7 @@ export const deleteProduct = async (id: string, userId: string) => {
     }
 
     if (existingProduct.ownerId != null) {
-        if (id !== userId) {
+        if (existingProduct.ownerId !== userId) {
             throw new ForbiddenException("cannot delete a product of another user");
         }
     }

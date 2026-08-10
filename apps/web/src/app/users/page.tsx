@@ -1,4 +1,3 @@
-// apps/web/src/app/users/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -49,7 +48,13 @@ export default function UsersPage() {
       <header className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Users</h1>
         <div className="flex gap-2">
-          <Button onClick={() => router.replace("/products")}>
+          <Button variant="secondary" onClick={() => router.replace("/fridges")}>
+            Browse fridges
+          </Button>
+          <Button variant="secondary" onClick={() => router.replace("/recipes")}>
+            Browse recipes
+          </Button>
+          <Button variant="secondary" onClick={() => router.replace("/products")}>
             Browse products
           </Button>
           <Button onClick={() => setEditing({ mode: "create" })}>

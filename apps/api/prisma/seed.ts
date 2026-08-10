@@ -27,9 +27,7 @@ async function main() {
 				},
 				recipes: {
 					create: [
-						{name: "spaghetti bolognese", description: "cook the pasta and add the warmed up bolognese sauce", ingredients: {
-							create: [{name: "spaghetti", size: 0.5}]
-							}
+						{name: "spaghetti bolognese", description: "cook the pasta and add the warmed up bolognese sauce", ingredients: ["spaghetti", "bolognese sauce"]
 						}
 					]
 				}
@@ -85,23 +83,6 @@ async function main() {
 	]);
 
 	console.log("Seeded fridges:", fridges);
-
-	const recipes = await Promise.all([
-		prisma.recipe.update({
-			where: {id: (await prisma.recipe.findFirst(
-						{where: {name: "spaghetti bolognese"}}
-					))!.id},
-			data: {
-				ingredients: { connect: [
-					{id: (await prisma.product.findFirst(
-						{where: {name: "bolognese sauce"}}
-					))!.id},
-				]},
-			},
-		}),
-	]);
-
-	console.log("Seeded recipes:", recipes);
 }
 
 main()

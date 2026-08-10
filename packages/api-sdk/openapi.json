@@ -895,6 +895,12 @@
           "ownerId": {
             "type": "string",
             "nullable": true
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
@@ -910,6 +916,12 @@
           },
           "description": {
             "type": "string"
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "ownerId": {
             "type": "string"

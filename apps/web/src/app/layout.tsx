@@ -3,8 +3,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "Node Course — User Admin",
-  description: "Example product frontend for the Panenco Node course",
+  title: "Fridge case",
 };
 
 export default function RootLayout({

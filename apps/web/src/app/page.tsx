@@ -9,6 +9,8 @@ export default function Home() {
   useEffect(() => {
     router.replace(isAuthenticated() ? "/users" : "/login");
     router.replace(isAuthenticated() ? "/products" : "/login");
+    router.replace(isAuthenticated() ? "/fridges" : "/login");
+    router.replace(isAuthenticated() ? "/recipes" : "/login");
   }, [router]);
   return null;
 }

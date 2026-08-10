@@ -19,7 +19,12 @@ export class RecipeView {
     @Expose()
     @IsString()
     public description: string;
-    
+            
+    @ApiPropertyOptional()
+    @Expose()
+    @IsOptional()
+    public ingredients: string[];
+
     @ApiPropertyOptional()
     @Expose()
     @IsString()

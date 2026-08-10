@@ -57,12 +57,14 @@ export type RecipeBody = {
     name?: string;
     description?: string;
     ownerId?: string | null;
+    ingredients?: Array<string>;
 };
 
 export type RecipeView = {
     id: string;
     name: string;
     description: string;
+    ingredients?: Array<string>;
     ownerId?: string;
 };
 

@@ -21,4 +21,10 @@ export class RecipeBody {
     @IsString()
     @IsOptional()
     public ownerId?: string;
+        
+    @ApiPropertyOptional()
+    @Expose()
+    @IsOptional()
+    public ingredients: string[];
+
 }

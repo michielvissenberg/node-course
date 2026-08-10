@@ -2,8 +2,10 @@ import { ForbiddenException, NotFoundException } from "@nestjs/common";
 import { prisma } from "../../../lib/prisma";
 
 export const update = async (id: string, body, userId) => {
-    if (body.ownerId != null) {
-        if (userId !== id) {
+    const productOwnerId = (await prisma.product.findUnique({where: {id}})).ownerId;
+    if (productOwnerId != null) {
+        console.log(body.ownerId);
+        if (userId !== productOwnerId) {
             throw new ForbiddenException("cannot update a product for another user");
         }
     }
@@ -26,6 +28,8 @@ export const update = async (id: string, body, userId) => {
         } else {
             throw new NotFoundException("Fridge not found");
         }
+    } else {
+        updateData.fridgeId = null;
     }
     // assign owner to this product (owner gets specific product/owner gifts product)
     if (body.ownerId != null) {

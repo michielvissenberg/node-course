@@ -14,10 +14,12 @@ const recipeFixtures = [
     {
         name: "test1",
         description: "testDesc1",
+        ingredients: ["test", "test1"]
     },
     {
         name: "test2",
         description: "testDesc2",
+        ingredients: ["test2", "test3"]
     },
 ];
 
@@ -34,6 +36,7 @@ describe("Handler tests recipe", () => {
                     data: {
                         name: fixture.name,
                         description: fixture.description,
+                        ingredients: fixture.ingredients,
                     },
                 });
             })
@@ -50,6 +53,7 @@ describe("Handler tests recipe", () => {
 
         expect(res.name).equal("test2");
         expect(res.description).equal("testDesc2");
+        expect(res.ingredients[0]).equal("test2");
     });
 
     it("should fail when getting recipe by unknown id", async () => {
@@ -66,11 +70,13 @@ describe("Handler tests recipe", () => {
         const body = {
             name: "test3",
             description: "testDesc3",
+            ingredients: ["testIngredient"],
         };
         const res = await create(body, "1");
 
         expect(res.name).equal("test3");
         expect(res.description).equal("testDesc3");
+        expect(res.ingredients[0]).equal("testIngredient");
     });
 
     it("should update recipe", async () => {
@@ -82,6 +88,7 @@ describe("Handler tests recipe", () => {
 
         expect(res.description).equal(body.description);
         expect(res.name).equal("test1");
+        expect(res.ingredients[0]).equal("test");
     });
 
     it("should delete recipe by id", async () => {

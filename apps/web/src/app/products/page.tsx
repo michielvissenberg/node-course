@@ -2,24 +2,32 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { ProductBody, ProductView } from "@node-course/api-sdk";
+import { deleteProduct, ProductBody, type ProductView } from "@node-course/api-sdk";
 import {
-  useProducts,
   useCreateProduct,
-} from "@/lib/api-hooks.user";
-import { clearToken, isAuthenticated } from "@/lib/auth";
+  useDeleteProduct,
+  useProducts,
+  useUpdateProduct,
+} from "@/lib/api-hooks.product";
+import { clearToken, getId, isAuthenticated } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ProductForm } from "@/components/product-form";
+import ProductInList from "@/components/productInList";
+import { GiftForm } from "@/components/gift-form";
 
 type Editing = { mode: "create" } | { mode: "edit"; product: ProductView } | null;
+type Gifting = { mode: "gift"; product: ProductView } | null;
 
 export default function ProductsPage() {
   const router = useRouter();
   const [authChecked, setAuthChecked] = useState(false);
   const [search, setSearch] = useState("");
+  const [searchAddress, setSearchAddress] = useState("");
   const [editing, setEditing] = useState<Editing>(null);
+  const [gifting, setGifting] = useState<Gifting>(null);
+  const [onlyShowMine, setOnlyShowMine] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -29,8 +37,12 @@ export default function ProductsPage() {
     }
   }, [router]);
 
-  const productsQuery = useProducts(search);
+  const productsQuery = useProducts(search, undefined, searchAddress);
   const createProduct = useCreateProduct();
+  const updateProduct = useUpdateProduct();
+  const deleteProduct = useDeleteProduct();
+  
+  const id = getId();
 
   if (!authChecked) return null;
 
@@ -44,7 +56,13 @@ export default function ProductsPage() {
       <header className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Products</h1>
         <div className="flex gap-2">
-          <Button onClick={() => router.replace("/users")}>
+          <Button variant="secondary" onClick={() => router.replace("/fridges")}>
+            Browse fridges
+          </Button>
+          <Button variant="secondary" onClick={() => router.replace("/recipes")}>
+            Browse recipes
+          </Button>
+          <Button variant="secondary" onClick={() => router.replace("/users")}>
             Browse users
           </Button>
           <Button onClick={() => setEditing({ mode: "create" })}>
@@ -56,12 +74,21 @@ export default function ProductsPage() {
         </div>
       </header>
 
-      <Input
-        placeholder="Search by name or expiration date..."
-        value={search}
-        onChange={(event) => setSearch(event.target.value)}
-        className="mb-4"
-      />
+      <div className="flex gap-2 justify-between">
+        <Input
+          placeholder="Search by name..."
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          className="mb-4"
+        />
+        <Input
+          placeholder="Search by fridge address..."
+          value={searchAddress}
+          onChange={(event) => setSearchAddress(event.target.value)}
+          className="mb-4"
+        />
+      </div>
+
 
       <Card className="divide-y divide-slate-100">
         {productsQuery.isLoading && (
@@ -74,31 +101,11 @@ export default function ProductsPage() {
           <p className="p-4 text-sm text-slate-500">No products found.</p>
         )}
         {productsQuery.data?.map((product) => (
-          <div key={product.id} className="flex items-center justify-between p-4">
-            <div>
-              <p className="font-medium">{product.name}</p>
-              <p className="text-sm text-slate-500">{product.expiresAt}</p>
-            </div>
-            <div className="flex gap-2">
-              {/* <Button
-                variant="secondary"
-                onClick={() => setEditing({ mode: "edit", product: product })}
-              >
-                Edit
-              </Button> */}
-              {/* <Button
-                variant="danger"
-                disabled={.isPending}
-                onClick={() => {
-                  if (confirm(`Delete ${product.name}?`)) {
-                    deleteUser.mutate(product.id);
-                  }
-                }}
-              >
-                Delete
-              </Button> */}
-            </div>
-          </div>
+          !onlyShowMine ? (
+            <ProductInList product={product} key={product.id}/>
+          ) : (
+            product.ownerId == id && (<ProductInList product={product} key={product.id}/>)
+          )
         ))}
       </Card>
 
@@ -111,7 +118,7 @@ export default function ProductsPage() {
             <ProductForm
               initialValues={
                 editing.mode === "edit"
-                  ? { name: editing.product.name, expiresAt: editing.product.expiresAt }
+                  ? { name: editing.product.name, size: editing.product.size }
                   : undefined
               }
               submitLabel={editing.mode === "create" ? "Create" : "Save"}
@@ -121,12 +128,69 @@ export default function ProductsPage() {
                 if (editing.mode === "create") {
                   createProduct.mutate(body, { onSuccess: () => setEditing(null) });
                 } 
-                // else {
-                //   updateUser.mutate(
-                //     { id: editing.user.id, body },
-                //     { onSuccess: () => setEditing(null) }
-                //   );
-                // }
+                else {
+                  updateProduct.mutate(
+                    { id: editing.product.id, body },
+                    { onSuccess: () => setEditing(null) }
+                  );
+                }
+              }}
+            />
+          </Card>
+        </div>
+      )}
+      <br />
+      <div className="flex gap-2 mb-6 flex items-center justify-between">
+        <Button onClick={() => onlyShowMine ? setOnlyShowMine(false) : setOnlyShowMine(true)}>
+          {onlyShowMine ? "Show all products" : "Only show my products"}
+        </Button>
+        <div className="flex gap-2">
+          <Button 
+            variant="secondary"
+            onClick={() => {
+                productsQuery.data?.map((product) => (
+                  setGifting({ mode: "gift", product })
+              ))
+            }}
+          >
+            Gift all 
+          </Button>
+          <Button 
+            variant="danger"
+            disabled={deleteProduct.isPending}
+            onClick={() => {
+              if (confirm(`Delete all your products?`)) {
+                productsQuery.data?.map((product) => (
+                  product.ownerId == id ? deleteProduct.mutate(product.id) : null
+                ))
+              }
+            }}
+          >
+            Delete all
+          </Button>
+        </div>
+      </div>
+      {gifting && (
+        <div className="fixed inset-0 flex items-center justify-center bg-slate-900/40 p-4">
+          <Card className="w-full max-w-md p-6">
+            <h2 className="mb-4 text-lg font-semibold">
+              Gift all your products in this fridge to another person
+            </h2>
+            <GiftForm 
+              onCancel={() => setGifting(null)}
+              onSubmit={(newOwner: string) => {
+                productsQuery.data?.map((product) => (
+                  product.ownerId == id ? 
+                    updateProduct.mutate(
+                      { id: product.id, body: {
+                        name: product.name,
+                        size: product.size,
+                        ownerId: newOwner,
+                        fridgeId: product.fridgeId
+                      }},
+                      { onSuccess: () => setGifting(null) }
+                    ) : null
+                ))
               }}
             />
           </Card>

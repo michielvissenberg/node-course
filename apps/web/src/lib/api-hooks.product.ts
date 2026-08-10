@@ -11,7 +11,7 @@ import {
 
 const PRODUCT_KEY = ["product"];
 
-export function useProducts(search: string, fridgeId: string, fridgeLocation: string) {
+export function useProducts(search?: string, fridgeId?: string, fridgeLocation?: string) {
   return useQuery({
     queryKey: [...PRODUCT_KEY, {search, fridgeId, fridgeLocation}],
     queryFn: async () => {
