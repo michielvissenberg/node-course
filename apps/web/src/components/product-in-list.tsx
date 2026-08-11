@@ -9,6 +9,7 @@ import { useFridges } from "@/lib/api-hooks.fridge";
 import { isAuthenticated } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { GiftForm } from "./gift-form";
+import { Dropdown } from "./dropdown-fridge-selection";
 
 type Editing = { mode: "create" } | { mode: "edit"; product: ProductView } | null;
 type InFridge = { mode: "putIn"; product: ProductView } | null;
@@ -37,9 +38,6 @@ export default function ProductInList(props: {product: ProductView}) {
   const id = getId()
 
   const [openDropdown, setOpen] = useState(false);
-  const handleToggle = () => {
-    setOpen((prev) => !prev);
-  };
   
   if (!authChecked) return null;
   return (
@@ -170,42 +168,18 @@ export default function ProductInList(props: {product: ProductView}) {
               <button
                 type="button"
                 className="inline-flex items-center justify-center rounded-md text-sm border border-[#e4e4e7] h-10 px-4 py-2"
-                onClick={handleToggle}
+                onClick={() => setOpen((prev) => !prev)}
               >
                 Available Fridges
               </button>
               {openDropdown && (
-                <div className="absolute left-0 top-12">
-                  <ul className="w-56 h-auto shadow-md rounded-md p-1 border bg-white">
-                    {fridges.data?.map((fridge, index) => (
-                      <li
-                        key={index}
-                        className={`relative flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100 rounded-md`}
-                        onClick={() => {
-                          updateProduct.mutate(
-                            { 
-                              id: product.id, 
-                              body: { 
-                                name: product.name, 
-                                size: product.size, 
-                                ownerId: product.ownerId, 
-                                fridgeId: fridge.id, 
-                              } 
-                            },
-                            {
-                              onSuccess: () => {
-                                handleToggle();
-                                setInFridge(null);
-                              }
-                            }
-                          );
-                        }}
-                      >
-                        Address: {fridge.address}, Floor: {fridge.floor}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <Dropdown 
+                  fridges={fridges}
+                  product={product}
+                  onSuccess={() => {
+                    setInFridge(null);
+                  }}
+                />
               )}
             </div>
             <Button onClick={() => setInFridge(null)}>
