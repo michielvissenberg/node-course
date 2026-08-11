@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { useDeleteManyProducts, useDeleteProduct, useProducts, useUpdateManyProducts } from "@/lib/api-hooks.product";
 import { getId } from "@/lib/auth";
 import { type FridgeView, type ProductView } from "@node-course/api-sdk";
-import ProductInList from "./productInList";
+import ProductInList from "./product-in-list";
 import { useState } from "react";
 import { GiftForm } from "./gift-form";
 

@@ -31,8 +31,10 @@ export const getAiRecipe = async (userId: string) => {
             of your own choice.
             Always remember: keep it realistic, no random stuff thrown on a plate, i want nice meals, 
             even if that means i have to buy more than half of the products of the generated recipe, 
-            you can also assume that pepper, salt, spices, olive oil, butter and other basic stuff is available, 
-            DO NOT MENTION THESE, they are trivial. Use many emojis`,
+            you can also assume that pepper, salt, spices, olive oil and butter is available, 
+            DO NOT MENTION THESE, they are trivial. Use many emojis.
+            ALWAYS double check your ingredients and if you need to buy them or if they are provided.
+            When no ingredients are provided you can come up with a recipe yourself`,
         prompt: `these are all products currently in my possession: ${productList}`,
     });
 

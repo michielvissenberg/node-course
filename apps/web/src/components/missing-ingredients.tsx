@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 import { Card } from "./ui/card";
 import { useProducts } from "@/lib/api-hooks.product";
 import { getId } from "@/lib/auth";

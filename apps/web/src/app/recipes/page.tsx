@@ -134,7 +134,10 @@ export default function RecipesPage() {
       </Card>
       <Button
         className="mt-4"
-        onClick={() => setAiRecipe(true)}
+        onClick={() => {
+          getAiRecipe.mutate();
+          setAiRecipe(true)
+        }}
       >
         Get ai-generated recipe
       </Button>
@@ -221,8 +224,7 @@ export default function RecipesPage() {
       {aiRecipe && (
         <div className="fixed inset-0 flex items-center justify-center bg-slate-900/40 p-4">
           <Card className="w-full max-w-2xl p-6 overflow-scroll max-h-[70vh]"> 
-            {/* here */}
-            {getAiRecipe.isLoading && (
+            {getAiRecipe.isPending && (
               <p className="p-4 text-sm text-slate-500">Loading…</p>
             )}
             {getAiRecipe.isError && (
@@ -247,7 +249,9 @@ export default function RecipesPage() {
               </>
             )}
             <Button 
-              onClick={() => setAiRecipe(false)}
+              onClick={() => {
+                setAiRecipe(false)}
+              }
             >
               Back
             </Button>

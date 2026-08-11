@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ProductForm } from "@/components/product-form";
-import ProductInList from "@/components/productInList";
+import ProductInList from "@/components/product-in-list";
 import { GiftForm } from "@/components/gift-form";
 
 type Editing = { mode: "create" } | { mode: "edit"; product: ProductView } | null;
@@ -117,36 +117,6 @@ export default function ProductsPage() {
         ))}
       </Card>
 
-      {editing && (
-        <div className="fixed inset-0 flex items-center justify-center bg-slate-900/40 p-4">
-          <Card className="w-full max-w-md p-6">
-            <h2 className="mb-4 text-lg font-semibold">
-              {editing.mode === "create" ? "New product" : "Edit product"}
-            </h2>
-            <ProductForm
-              initialValues={
-                editing.mode === "edit"
-                  ? { name: editing.product.name, size: editing.product.size }
-                  : undefined
-              }
-              submitLabel={editing.mode === "create" ? "Create" : "Save"}
-              pending={createProduct.isPending}
-              onCancel={() => setEditing(null)}
-              onSubmit={(body: ProductBody) => {
-                if (editing.mode === "create") {
-                  createProduct.mutate(body, { onSuccess: () => setEditing(null) });
-                } 
-                else {
-                  updateProduct.mutate(
-                    { id: editing.product.id, body },
-                    { onSuccess: () => setEditing(null) }
-                  );
-                }
-              }}
-            />
-          </Card>
-        </div>
-      )}
       <br />
       <div className="flex gap-2 mb-6 flex items-center justify-between">
         <Button onClick={() => onlyShowMine ? setOnlyShowMine(false) : setOnlyShowMine(true)}>
@@ -187,6 +157,38 @@ export default function ProductsPage() {
           </Button>
         </div>
       </div>
+
+      {editing && (
+        <div className="fixed inset-0 flex items-center justify-center bg-slate-900/40 p-4">
+          <Card className="w-full max-w-md p-6">
+            <h2 className="mb-4 text-lg font-semibold">
+              {editing.mode === "create" ? "New product" : "Edit product"}
+            </h2>
+            <ProductForm
+              initialValues={
+                editing.mode === "edit"
+                  ? { name: editing.product.name, size: editing.product.size }
+                  : undefined
+              }
+              submitLabel={editing.mode === "create" ? "Create" : "Save"}
+              pending={createProduct.isPending}
+              onCancel={() => setEditing(null)}
+              onSubmit={(body: ProductBody) => {
+                if (editing.mode === "create") {
+                  createProduct.mutate(body, { onSuccess: () => setEditing(null) });
+                } 
+                else {
+                  updateProduct.mutate(
+                    { id: editing.product.id, body },
+                    { onSuccess: () => setEditing(null) }
+                  );
+                }
+              }}
+            />
+          </Card>
+        </div>
+      )}
+
       {gifting && (
         <div className="fixed inset-0 flex items-center justify-center bg-slate-900/40 p-4">
           <Card className="w-full max-w-md p-6">

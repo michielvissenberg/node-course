@@ -8,6 +8,7 @@ import { deleteRecipe } from "../../controllers/recipes/handlers/delete.handler"
 import { get } from "../../controllers/recipes/handlers/get.handler";
 import { getList } from "../../controllers/recipes/handlers/getList.handler";
 import { update } from "../../controllers/recipes/handlers/update.handler";
+import { getAiRecipe } from "../../controllers/recipes/handlers/aiRecipe.handler";
 
 
 const recipeFixtures = [
@@ -99,4 +100,11 @@ describe("Handler tests recipe", () => {
         expect(initialCount - 1).equal(newCount);
     });
 
+    it("should return an ai-generated recipe", async () => {
+        const res = await getAiRecipe("1");
+        expect(res.description).to.exist;
+        expect(res.ingredients).to.exist;
+        expect(res.name).to.exist;
+        expect(res.steps).to.exist;
+    }).timeout(10000);
 });

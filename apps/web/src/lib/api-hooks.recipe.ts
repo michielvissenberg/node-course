@@ -11,6 +11,7 @@ import {
 } from "@node-course/api-sdk";
 
 const RECIPES_KEY = ["recipes"];
+const AI_RECIPE_KEY = ["aiRecipe"];
 
 export function useRecipes(search: string) {
   return useQuery({
@@ -63,12 +64,15 @@ export function useDeleteRecipe() {
 }
 
 export function useGetAiRecipe() {
-  return useQuery({
-    queryKey: [...RECIPES_KEY],
-    queryFn: async () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
       const {data, error} = await getAiRecipe()
       if (error) throw error;
       return data ?? "";
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: AI_RECIPE_KEY });
     },
   })
 }

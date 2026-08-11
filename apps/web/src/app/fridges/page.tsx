@@ -15,7 +15,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { FridgeForm } from "@/components/fridge-form";
 
-import SpecificFridge from "../../components/specificFridge";
+import SpecificFridge from "../../components/specific-fridge";
 
 
 type Editing = { mode: "create" } | { mode: "edit"; fridge: FridgeView } | null;
