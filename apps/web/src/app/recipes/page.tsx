@@ -8,6 +8,7 @@ import {
   useCreateRecipe,
   useDeleteRecipe,
   useUpdateRecipe,
+  useGetAiRecipe,
 } from "@/lib/api-hooks.recipe";
 import { clearToken, getId, isAuthenticated } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -25,7 +26,7 @@ export default function RecipesPage() {
   const [search, setSearch] = useState("");
   const [editing, setEditing] = useState<Editing>(null);
   const [viewing, setViewing] = useState<Viewing>(false);
-
+  const [aiRecipe, setAiRecipe] = useState<boolean>(false);
   const id = getId()
 
   useEffect(() => {
@@ -40,6 +41,7 @@ export default function RecipesPage() {
   const createRecipe = useCreateRecipe();
   const updateRecipe = useUpdateRecipe();
   const deleteRecipe = useDeleteRecipe();
+  const getAiRecipe = useGetAiRecipe();
 
   if (!authChecked) return null;
 
@@ -130,6 +132,12 @@ export default function RecipesPage() {
           </div>
         ))}
       </Card>
+      <Button
+        className="mt-4"
+        onClick={() => setAiRecipe(true)}
+      >
+        Get ai-generated recipe
+      </Button>
 
       {editing && (
         <div className="fixed inset-0 flex items-center justify-center bg-slate-900/40 p-4">
@@ -207,6 +215,42 @@ export default function RecipesPage() {
                 setViewing({mode: "view", recipe: viewing.recipe});
               }}
             />
+          </Card>
+        </div>
+      )}
+      {aiRecipe && (
+        <div className="fixed inset-0 flex items-center justify-center bg-slate-900/40 p-4">
+          <Card className="w-full max-w-2xl p-6 overflow-scroll max-h-[70vh]"> 
+            {/* here */}
+            {getAiRecipe.isLoading && (
+              <p className="p-4 text-sm text-slate-500">Loading…</p>
+            )}
+            {getAiRecipe.isError && (
+              <p className="p-4 text-sm text-red-600">Failed to get a recipe.</p>
+            )}
+            {getAiRecipe.data && (
+              <>
+                <h2 className="text-lg font-semibold">Recipe: {getAiRecipe.data.name}</h2>
+                <p className=" text-sm text-slate-500"><b>Ingredients:</b> </p>
+                <ul className="h-auto p-1 bg-white list-disc list-inside">
+                  {getAiRecipe.data.ingredients?.map((ingredient) => 
+                    <li key={ingredient.name} className={`list-item relative flex items-center gap-2 py-0 text-sm text-slate-500 flex justify-center`}>{ingredient.name} {ingredient.toBeBought && <>(need to buy)</>}</li>
+                  )}
+                </ul>
+                <p className=" text-sm text-slate-500"><b>Description:</b> <br/>{getAiRecipe.data.description}</p>
+                <p className="pt-4 text-sm text-slate-500"><b>Steps:</b> </p>
+                <ul className="h-auto p-1 bg-white list-disc list-inside">
+                  {getAiRecipe.data.steps?.map((step) => 
+                    <li key={step} className={`list-item relative flex items-center gap-2 py-0 text-sm `}>{step}</li>
+                  )}
+                </ul>
+              </>
+            )}
+            <Button 
+              onClick={() => setAiRecipe(false)}
+            >
+              Back
+            </Button>
           </Card>
         </div>
       )}

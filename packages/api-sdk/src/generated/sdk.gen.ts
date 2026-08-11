@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateFridgeData, CreateFridgeResponses, CreateProductData, CreateProductResponses, CreateRecipeData, CreateRecipeResponses, CreateUserData, CreateUserResponses, DeleteFridgeData, DeleteFridgeResponses, DeleteMultipleData, DeleteMultipleResponses, DeleteProductData, DeleteProductResponses, DeleteRecipeData, DeleteRecipeResponses, DeleteUserData, DeleteUserResponses, GetFridgeData, GetFridgeResponses, GetProductData, GetProductResponses, GetRecipeData, GetRecipeResponses, GetUserData, GetUserResponses, ListFridgesData, ListFridgesResponses, ListProductsData, ListProductsResponses, ListRecipesData, ListRecipesResponses, ListUsersData, ListUsersResponses, LoginData, LoginResponses, UpdateFridgeData, UpdateFridgeResponses, UpdateMultipleData, UpdateMultipleResponses, UpdateProductData, UpdateProductResponses, UpdateRecipeData, UpdateRecipeResponses, UpdateUserData, UpdateUserResponses } from './types.gen';
+import type { CreateFridgeData, CreateFridgeResponses, CreateProductData, CreateProductResponses, CreateRecipeData, CreateRecipeResponses, CreateUserData, CreateUserResponses, DeleteFridgeData, DeleteFridgeResponses, DeleteMultipleData, DeleteMultipleResponses, DeleteProductData, DeleteProductResponses, DeleteRecipeData, DeleteRecipeResponses, DeleteUserData, DeleteUserResponses, GetAiRecipeData, GetAiRecipeResponses, GetFridgeData, GetFridgeResponses, GetProductData, GetProductResponses, GetRecipeData, GetRecipeResponses, GetUserData, GetUserResponses, ListFridgesData, ListFridgesResponses, ListProductsData, ListProductsResponses, ListRecipesData, ListRecipesResponses, ListUsersData, ListUsersResponses, LoginData, LoginResponses, UpdateFridgeData, UpdateFridgeResponses, UpdateMultipleData, UpdateMultipleResponses, UpdateProductData, UpdateProductResponses, UpdateRecipeData, UpdateRecipeResponses, UpdateUserData, UpdateUserResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -214,6 +214,15 @@ export const createRecipe = <ThrowOnError extends boolean = false>(options: Opti
         'Content-Type': 'application/json',
         ...options.headers
     }
+});
+
+/**
+ * get an ai-generated recipe based on your products
+ */
+export const getAiRecipe = <ThrowOnError extends boolean = false>(options?: Options<GetAiRecipeData, ThrowOnError>): RequestResult<GetAiRecipeResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetAiRecipeResponses, unknown, ThrowOnError>({
+    security: [{ name: 'x-auth', type: 'apiKey' }],
+    url: '/api/recipes/aiRecipe',
+    ...options
 });
 
 /**

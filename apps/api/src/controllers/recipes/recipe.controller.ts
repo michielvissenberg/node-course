@@ -11,6 +11,8 @@ import { get } from "./handlers/get.handler";
 import { update } from "./handlers/update.handler";
 import { deleteRecipe } from "./handlers/delete.handler";
 import { CurrentUser } from "../../decorators/user.decorator";
+import { getAiRecipe } from "./handlers/aiRecipe.handler";
+import { AiResponseBody } from "../../contracts/aiResponse.body";
  
 
 @Controller("recipes")
@@ -30,6 +32,19 @@ export class RecipeController {
         return create(body, userId);
     }
 
+    @Get("/aiRecipe")
+    @UseGuards(JwtAuthGuard)
+    @ApiSecurity("x-auth")
+    @Serialize(AiResponseBody)
+    @ApiOperation({ operationId: "getAiRecipe", summary: "get an ai-generated recipe based on your products" })
+    @ApiResponse({
+        status: 200,
+        description: "Recipes created successfully",
+        type: AiResponseBody,
+    })
+    async getAiRecipe(@CurrentUser("userId") userId: string): Promise<AiResponseBody> {
+        return await getAiRecipe(userId);
+    }
 
     @Get()
     @UseGuards(JwtAuthGuard)

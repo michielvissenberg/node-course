@@ -642,6 +642,33 @@
         ]
       }
     },
+    "/api/recipes/aiRecipe": {
+      "get": {
+        "operationId": "getAiRecipe",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Recipes created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiResponseBody"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "x-auth": []
+          }
+        ],
+        "summary": "get an ai-generated recipe based on your products",
+        "tags": [
+          "Recipe"
+        ]
+      }
+    },
     "/api/recipes/{id}": {
       "get": {
         "operationId": "getRecipe",
@@ -981,6 +1008,44 @@
           "name",
           "description"
         ]
+      },
+      "AiResponseIngredientBody": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "toBeBought": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "toBeBought"
+        ]
+      },
+      "AiResponseBody": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AiResponseIngredientBody"
+            }
+          },
+          "description": {
+            "type": "string"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
       },
       "LoginBody": {
         "type": "object",

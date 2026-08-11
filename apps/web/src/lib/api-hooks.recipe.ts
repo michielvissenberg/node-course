@@ -6,6 +6,7 @@ import {
   deleteRecipe,
   listRecipes,
   updateRecipe,
+  getAiRecipe,
   type RecipeBody,
 } from "@node-course/api-sdk";
 
@@ -59,4 +60,15 @@ export function useDeleteRecipe() {
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: RECIPES_KEY }),
   });
+}
+
+export function useGetAiRecipe() {
+  return useQuery({
+    queryKey: [...RECIPES_KEY],
+    queryFn: async () => {
+      const {data, error} = await getAiRecipe()
+      if (error) throw error;
+      return data ?? "";
+    },
+  })
 }

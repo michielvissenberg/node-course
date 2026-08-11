@@ -68,6 +68,18 @@ export type RecipeView = {
     ownerId?: string;
 };
 
+export type AiResponseIngredientBody = {
+    name: string;
+    toBeBought: boolean;
+};
+
+export type AiResponseBody = {
+    name?: string;
+    ingredients?: Array<AiResponseIngredientBody>;
+    description?: string;
+    steps?: Array<string>;
+};
+
 export type LoginBody = {
     email: string;
     password: string;
@@ -386,6 +398,22 @@ export type CreateRecipeResponses = {
 };
 
 export type CreateRecipeResponse = CreateRecipeResponses[keyof CreateRecipeResponses];
+
+export type GetAiRecipeData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/recipes/aiRecipe';
+};
+
+export type GetAiRecipeResponses = {
+    /**
+     * Recipes created successfully
+     */
+    200: AiResponseBody;
+};
+
+export type GetAiRecipeResponse = GetAiRecipeResponses[keyof GetAiRecipeResponses];
 
 export type DeleteRecipeData = {
     body?: never;
