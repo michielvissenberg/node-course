@@ -26,8 +26,8 @@ export type UpdateUserBody = {
 };
 
 export type ProductBody = {
-    name?: string;
-    size?: number;
+    name: string;
+    size: number;
     ownerId?: string | null;
     fridgeId?: string | null;
 };
@@ -41,9 +41,9 @@ export type ProductView = {
 };
 
 export type FridgeBody = {
-    address?: string;
-    floor?: number;
-    capacity?: number;
+    address: string;
+    floor: number;
+    capacity: number;
 };
 
 export type FridgeView = {
@@ -54,10 +54,11 @@ export type FridgeView = {
 };
 
 export type RecipeBody = {
-    name?: string;
-    description?: string;
+    name: string;
+    description: string;
     ownerId?: string | null;
     ingredients?: Array<string>;
+    steps?: Array<string>;
 };
 
 export type RecipeView = {
@@ -66,6 +67,7 @@ export type RecipeView = {
     description: string;
     ingredients?: Array<string>;
     ownerId?: string;
+    steps?: Array<string>;
 };
 
 export type AiResponseIngredientBody = {
@@ -74,10 +76,10 @@ export type AiResponseIngredientBody = {
 };
 
 export type AiResponseBody = {
-    name?: string;
-    ingredients?: Array<AiResponseIngredientBody>;
-    description?: string;
-    steps?: Array<string>;
+    name: string;
+    ingredients: Array<AiResponseIngredientBody>;
+    description: string;
+    steps: Array<string>;
 };
 
 export type LoginBody = {

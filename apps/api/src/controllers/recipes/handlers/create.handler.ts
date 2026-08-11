@@ -15,7 +15,7 @@ export const create = async (body: RecipeBody, userId) => {
     // assign owner to this recipe (user writes down recipe)
     if (body.ownerId != null) {
         if (await prisma.user.findUnique({ where: { id: body.ownerId }}) !== null) {
-            data.ownerId = body.ownerId;
+            data.owner = {connect: {id: body.ownerId}}
         } else {
             throw new NotFoundException("Owner not found");
         }
@@ -23,9 +23,12 @@ export const create = async (body: RecipeBody, userId) => {
     if (body.ingredients != null) {
         data.ingredients = body.ingredients.slice();
     }
+    if (body.steps != null) {
+        data.steps = body.steps.slice();
+    }
 
     const recipe = await prisma.recipe.create({
-        data: data,
+        data: data as RecipeBody,
     });
 
     return recipe;

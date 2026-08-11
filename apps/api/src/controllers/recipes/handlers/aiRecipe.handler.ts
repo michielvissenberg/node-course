@@ -34,7 +34,8 @@ export const getAiRecipe = async (userId: string) => {
             you can also assume that pepper, salt, spices, olive oil and butter is available, 
             DO NOT MENTION THESE, they are trivial. Use many emojis.
             ALWAYS double check your ingredients and if you need to buy them or if they are provided.
-            When no ingredients are provided you can come up with a recipe yourself`,
+            When no ingredients are provided you can come up with a recipe yourself.
+            Do not capitalize ingredients`,
         prompt: `these are all products currently in my possession: ${productList}`,
     });
 

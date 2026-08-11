@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Exclude, Expose } from "class-transformer";
-import { IsOptional, IsString } from "class-validator";
+import { IsArray, IsOptional, IsString } from "class-validator";
 
 @Exclude()
 export class RecipeBody {
@@ -22,7 +22,13 @@ export class RecipeBody {
         
     @ApiPropertyOptional()
     @Expose()
+    @IsArray()
     @IsOptional()
     public ingredients?: string[];
-
+    
+    @ApiPropertyOptional()
+    @Expose()
+    @IsArray()
+    @IsOptional()
+    public steps?: string[];
 }

@@ -893,7 +893,11 @@
             "type": "string",
             "nullable": true
           }
-        }
+        },
+        "required": [
+          "name",
+          "size"
+        ]
       },
       "ProductView": {
         "type": "object",
@@ -933,7 +937,12 @@
           "capacity": {
             "type": "number"
           }
-        }
+        },
+        "required": [
+          "address",
+          "floor",
+          "capacity"
+        ]
       },
       "FridgeView": {
         "type": "object",
@@ -977,8 +986,18 @@
             "items": {
               "type": "string"
             }
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
-        }
+        },
+        "required": [
+          "name",
+          "description"
+        ]
       },
       "RecipeView": {
         "type": "object",
@@ -1001,6 +1020,12 @@
           },
           "ownerId": {
             "type": "string"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -1045,7 +1070,13 @@
               "type": "string"
             }
           }
-        }
+        },
+        "required": [
+          "name",
+          "ingredients",
+          "description",
+          "steps"
+        ]
       },
       "LoginBody": {
         "type": "object",

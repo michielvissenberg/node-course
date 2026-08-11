@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { RecipeBody, RecipeView } from "@node-course/api-sdk";
+import type { AiResponseIngredientBody, RecipeBody, RecipeView } from "@node-course/api-sdk";
 import {
   useRecipes,
   useCreateRecipe,
@@ -182,7 +182,7 @@ export default function RecipesPage() {
       )}
       {viewing && viewing.mode == "view" && (
         <div className="fixed inset-0 flex items-center justify-center bg-slate-900/40 p-4">
-          <Card className="w-full max-w-md p-6">
+          <Card className="w-full max-w-md p-6 overflow-scroll max-h-[70vh]">
             <h2 className="mb-4 text-lg font-semibold">
               {viewing.recipe.name}
             </h2>
@@ -193,6 +193,14 @@ export default function RecipesPage() {
                   <li key={ingredient} className="flex items-center justify-between bg-gray-50 p-2 rounded text-sm">{ingredient}</li>
                 )}
               </ul>
+              {viewing.recipe.steps && (
+                <ul className="space-y-2 mt-2">
+                  <b>Steps: </b>
+                  {viewing.recipe.steps.map((step) =>
+                    <li key={step} className="flex items-center justify-between bg-gray-50 p-2 rounded text-sm">{step}</li>
+                  )}
+                </ul>
+              )}
               <div className="mt-2 flex justify-between">
                 <Button variant="secondary" onClick={() => {
                     setViewing({mode: "ingredients", recipe: viewing.recipe});
@@ -248,13 +256,37 @@ export default function RecipesPage() {
                 </ul>
               </>
             )}
-            <Button 
-              onClick={() => {
-                setAiRecipe(false)}
+            <div className="flex items-center justify-between">
+              {getAiRecipe.data && 
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    if (!getAiRecipe.data || typeof getAiRecipe.data === 'string') return 
+                    createRecipe.mutate({
+                      name: getAiRecipe.data.name,
+                      description: getAiRecipe.data.description,
+                      ownerId: id,
+                      ingredients: getAiRecipe.data.ingredients.map((ingredient: AiResponseIngredientBody) => ingredient.name),
+                      steps: getAiRecipe.data.steps.map((step) => step),
+                    },
+                    {  
+                      onSuccess: () => {setAiRecipe(false)}
+                    }
+                    );
+                  }}
+                >
+                  Save
+                </Button>
               }
-            >
-              Back
-            </Button>
+              <Button 
+                variant="danger"
+                onClick={() => {
+                  setAiRecipe(false)}
+                }
+              >
+                Discard
+              </Button>
+            </div>
           </Card>
         </div>
       )}

@@ -23,6 +23,11 @@ async function main() {
 						{name: "bolognese sauce", size: 0.5},
 						{name: "burger", size: 1},
 						{name: "lettuce", size: 3},
+						{name: "tomato", size: 3},
+						{name: "cheddar cheese", size: 1},
+						{name: "sour cream", size: 1.5},
+						{name: "tacos", size: 0.8},
+
 					]
 				},
 				recipes: {
@@ -45,7 +50,7 @@ async function main() {
 					create: [
 						{name: "pear", size: 0.2},
 						{name: "cola can", size: 0.33},
-						{name: "tomato", size: 2},
+						{name: "bacon", size: 2},
 						{name: "cheese", size: 0.5},
 					]
 				},
@@ -71,7 +76,7 @@ async function main() {
 				capacity: 500,
 				products: { connect: [
 					{id: (await prisma.product.findFirst(
-						{where: {name: "tomato"}}
+						{where: {name: "bacon"}}
 					))!.id},
 					{id: (await prisma.product.findFirst(
 						{where: {name: "cheese"}}
@@ -102,6 +107,18 @@ async function main() {
 					))!.id},
 					{id: (await prisma.product.findFirst(
 						{where: {name: "lettuce"}}
+					))!.id},
+					{id: (await prisma.product.findFirst(
+						{where: {name: "cheddar cheese"}}
+					))!.id},
+					{id: (await prisma.product.findFirst(
+						{where: {name: "tacos"}}
+					))!.id},
+					{id: (await prisma.product.findFirst(
+						{where: {name: "tomato"}}
+					))!.id},
+					{id: (await prisma.product.findFirst(
+						{where: {name: "sour cream"}}
 					))!.id},
 				]}
 			}
