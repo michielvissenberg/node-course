@@ -11,6 +11,7 @@ import { get } from "./handlers/get.handler";
 import { update } from "./handlers/update.handler";
 import { deleteProduct } from "./handlers/delete.handler";
 import { CurrentUser } from "../../decorators/user.decorator";
+import { deleteManyProducts } from "./handlers/deleteMany.handler";
 
 @Controller("products")
 export class ProductController {
@@ -68,5 +69,14 @@ export class ProductController {
     @ApiOperation({ operationId: "deleteProduct", summary: "Delete product by id" })
     async delete(@Param("id") id: string, @CurrentUser("userId") userId: string) {
         await deleteProduct(id, userId);
+    }
+    
+    @Patch()
+    @UseGuards(JwtAuthGuard)
+    @ApiSecurity("x-auth")
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @ApiOperation({ operationId: "deleteMultiple", summary: "Delete products by list of ids" })
+    async deleteMany(@Body() body: {fridgeId: string | undefined, ids: string[]}, @CurrentUser("userId") userId: string) {
+        await deleteManyProducts(body, userId);
     }
 }
