@@ -189,6 +189,19 @@ export type ListProductsResponses = {
 
 export type ListProductsResponse = ListProductsResponses[keyof ListProductsResponses];
 
+export type DeleteMultipleData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/products';
+};
+
+export type DeleteMultipleResponses = {
+    204: void;
+};
+
+export type DeleteMultipleResponse = DeleteMultipleResponses[keyof DeleteMultipleResponses];
+
 export type CreateProductData = {
     body: ProductBody;
     path?: never;

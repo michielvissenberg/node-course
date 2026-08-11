@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { 
   createProduct, 
   deleteProduct, 
+  deleteMultiple,
   listProducts, 
   type ProductBody,
   updateProduct, 
@@ -61,6 +62,17 @@ export function useDeleteProduct() {
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await deleteProduct({ path: { id } });
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: PRODUCT_KEY }),
+  });
+}
+
+export function useDeleteManyProducts() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({fridgeId, ids}: {fridgeId?: string, ids: string[]}) => {
+      const { error } = await deleteMultiple({body: {fridgeId, ids}} as any);
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: PRODUCT_KEY }),

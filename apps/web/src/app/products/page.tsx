@@ -8,6 +8,7 @@ import {
   useDeleteProduct,
   useProducts,
   useUpdateProduct,
+  useDeleteManyProducts,
 } from "@/lib/api-hooks.product";
 import { clearToken, getId, isAuthenticated } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -41,6 +42,8 @@ export default function ProductsPage() {
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
   const deleteProduct = useDeleteProduct();
+  const deleteMany = useDeleteManyProducts();
+  const toBeDeleted: string[] = [];
   
   const id = getId();
 
@@ -50,6 +53,7 @@ export default function ProductsPage() {
     clearToken();
     router.replace("/login");
   };
+
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-10">
@@ -161,8 +165,13 @@ export default function ProductsPage() {
             onClick={() => {
               if (confirm(`Delete all your products?`)) {
                 productsQuery.data?.map((product) => (
-                  product.ownerId == id ? deleteProduct.mutate(product.id) : null
+                  product.ownerId == id ? 
+                    toBeDeleted.push(product.id)
+                  :
+                    null
+                  // product.ownerId == id ? deleteProduct.mutate(product.id) : null
                 ))
+                deleteMany.mutate({fridgeId: undefined, ids: toBeDeleted})
               }
             }}
           >

@@ -264,6 +264,24 @@
         "tags": [
           "Product"
         ]
+      },
+      "patch": {
+        "operationId": "deleteMultiple",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "x-auth": []
+          }
+        ],
+        "summary": "Delete products by list of ids",
+        "tags": [
+          "Product"
+        ]
       }
     },
     "/api/products/{id}": {

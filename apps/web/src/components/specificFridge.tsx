@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useDeleteProduct, useProducts, useUpdateProduct } from "@/lib/api-hooks.product";
+import { useDeleteManyProducts, useDeleteProduct, useProducts, useUpdateProduct } from "@/lib/api-hooks.product";
 import { getId } from "@/lib/auth";
 import { type FridgeView, type ProductView } from "@node-course/api-sdk";
 import ProductInList from "./productInList";
@@ -16,7 +16,9 @@ export default function SpecificFridge(props: {fridge: FridgeView}) {
   const productsQuery = useProducts(undefined, props.fridge.id);
   const deleteProduct = useDeleteProduct();
   const updateProduct = useUpdateProduct();
-
+  const deleteMany = useDeleteManyProducts();
+  const toBeDeleted: string[] = [];
+  
   const id = getId();
 
   return (
@@ -59,10 +61,15 @@ export default function SpecificFridge(props: {fridge: FridgeView}) {
             variant="danger"
             disabled={deleteProduct.isPending}
             onClick={() => {
-              if (confirm(`Delete all your products?`)) {
+              if (confirm(`Delete all your products in this fridge?`)) {
                 productsQuery.data?.map((product) => (
-                  product.ownerId == id ? deleteProduct.mutate(product.id) : null
+                  product.ownerId == id ? 
+                    toBeDeleted.push(product.id)
+                  :
+                    null
+                  // product.ownerId == id ? deleteProduct.mutate(product.id) : null
                 ))
+                deleteMany.mutate({fridgeId: props.fridge.id, ids: toBeDeleted})
               }
             }}
           >

@@ -8,9 +8,11 @@ import { ProductForm } from "./product-form";
 import { useFridges } from "@/lib/api-hooks.fridge";
 import { isAuthenticated } from "@/lib/auth";
 import { useRouter } from "next/navigation";
+import { GiftForm } from "./gift-form";
 
 type Editing = { mode: "create" } | { mode: "edit"; product: ProductView } | null;
 type InFridge = { mode: "putIn"; product: ProductView } | null;
+type Gifting = { mode: "gift"; product: ProductView } | null;
 
 export default function ProductInList(props: {product: ProductView}) {
   const router = useRouter();
@@ -25,6 +27,7 @@ export default function ProductInList(props: {product: ProductView}) {
   
   const [editing, setEditing] = useState<Editing>(null);
   const [inFridge, setInFridge] = useState<InFridge>(null);
+  const [gifting, setGifting] = useState<Gifting>(null);
   const product = props.product
   
   const createProduct = useCreateProduct();
@@ -90,7 +93,12 @@ export default function ProductInList(props: {product: ProductView}) {
                 Claim
               </Button>
             )}
-            
+            <Button
+              variant="secondary"
+              onClick={() => {setGifting({mode: "gift", product})}}
+            >
+              Gift
+            </Button>
             <Button
               variant="secondary"
               onClick={() => setEditing({ mode: "edit", product })}
@@ -204,6 +212,29 @@ export default function ProductInList(props: {product: ProductView}) {
               Cancel
             </Button>
           </div>
+        </Card>
+      </div>
+    )}
+    {gifting && (
+      <div className="fixed inset-0 flex items-center justify-center bg-slate-900/40 p-4">
+        <Card className="w-full max-w-md p-6">
+          <h2 className="mb-4 text-lg font-semibold">
+            Gift all your products in this fridge to another person
+          </h2>
+          <GiftForm 
+            onCancel={() => setGifting(null)}
+            onSubmit={(newOwner: string) => {
+              updateProduct.mutate(
+                { id: product.id, body: {
+                  name: product.name,
+                  size: product.size,
+                  ownerId: newOwner,
+                  fridgeId: product.fridgeId
+                }},
+                { onSuccess: () => setGifting(null) } 
+              )
+            }}
+          />
         </Card>
       </div>
     )}
