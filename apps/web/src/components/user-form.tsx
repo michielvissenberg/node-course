@@ -71,9 +71,6 @@ export function UserForm({
         {errors.password && (
           <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
         )}
-        {/* <p className="mt-1 text-xs text-slate-400">
-          The example API requires all fields (including password) on update.
-        </p> */}
       </div>
       <div className="flex justify-end gap-2 pt-2">
         <Button type="button" variant="secondary" onClick={onCancel}>

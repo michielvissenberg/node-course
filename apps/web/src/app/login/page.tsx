@@ -20,8 +20,6 @@ const schema = z.object({
 type LoginValues = z.infer<typeof schema>;
 
 function loginErrorMessage(error: unknown): string {
-  // The SDK throws the API's error body ({ statusCode, message, ... }).
-  // 401 means bad credentials; anything else is an unexpected server/network error.
   const statusCode = (error as { statusCode?: number } | null)?.statusCode;
   return statusCode === 401
     ? "Invalid email or password."

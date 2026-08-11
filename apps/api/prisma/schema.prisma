@@ -36,7 +36,6 @@ model Product {
 
   @@map("products")
 }
-// maybe some flag is needed to indicate it is a recipe product 
 
 model Fridge {
   id        String    @id @default(uuid())

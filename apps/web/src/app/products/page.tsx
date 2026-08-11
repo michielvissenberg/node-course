@@ -147,7 +147,6 @@ export default function ProductsPage() {
                     toBeDeleted.push(product.id)
                   :
                     null
-                  // product.ownerId == id ? deleteProduct.mutate(product.id) : null
                 ))
                 deleteMany.mutate({fridgeId: undefined, ids: toBeDeleted})
               }

@@ -4,13 +4,11 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-	// Clear existing data
 	await prisma.user.deleteMany();
 	await prisma.product.deleteMany();
 	await prisma.fridge.deleteMany();
 	await prisma.recipe.deleteMany();
 	
-	// Create initial users
 	const users = await Promise.all([
 		prisma.user.create({
 			data: {
@@ -31,7 +29,7 @@ async function main() {
 					create: [
 						{name: "spaghetti bolognese", description: "cook the pasta and add the warmed up bolognese sauce", ingredients: ["spaghetti", "bolognese sauce"]
 						},
-						{name: "burger", description: "bake the burger, put some cheddar on it and put it in a patty with some vegetables", ingredients: ["burger", "patty", "salad", "tomato", "cheddar cheese"]
+						{name: "burger", description: "bake the burger, put some cheddar on it and put it in a patty with some vegetables", ingredients: ["burger", "patty", "lettuce", "tomato", "cheddar cheese"]
 						}
 					]
 				}
@@ -106,6 +104,13 @@ async function main() {
 						{where: {name: "lettuce"}}
 					))!.id},
 				]}
+			}
+		}),
+		prisma.fridge.create({
+			data: {
+				address: "Verbrande Poort 2",
+				floor: 2,
+				capacity: 500,
 			}
 		}),
 	]);

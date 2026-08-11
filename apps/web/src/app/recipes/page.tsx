@@ -236,14 +236,14 @@ export default function RecipesPage() {
                 <p className=" text-sm text-slate-500"><b>Ingredients:</b> </p>
                 <ul className="h-auto p-1 bg-white list-disc list-inside">
                   {getAiRecipe.data.ingredients?.map((ingredient) => 
-                    <li key={ingredient.name} className={`list-item relative flex items-center gap-2 py-0 text-sm text-slate-500 flex justify-center`}>{ingredient.name} {ingredient.toBeBought && <>(need to buy)</>}</li>
+                    <li key={ingredient.name} className={`list-item relative flex items-center gap-2 py-0 text-sm text-slate-500 `}>{ingredient.name} {ingredient.toBeBought && <>(need to buy)</>}</li>
                   )}
                 </ul>
                 <p className=" text-sm text-slate-500"><b>Description:</b> <br/>{getAiRecipe.data.description}</p>
                 <p className="pt-4 text-sm text-slate-500"><b>Steps:</b> </p>
                 <ul className="h-auto p-1 bg-white list-disc list-inside">
                   {getAiRecipe.data.steps?.map((step) => 
-                    <li key={step} className={`list-item relative flex items-center gap-2 py-0 text-sm `}>{step}</li>
+                    <li key={step} className={`list-item relative flex items-center gap-2 py-0 text-sm text-slate-500 `}>{step}</li>
                   )}
                 </ul>
               </>

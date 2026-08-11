@@ -72,7 +72,6 @@ export default function SpecificFridge(props: {fridge: FridgeView}) {
                     toBeDeleted.push(product.id)
                   :
                     null
-                  // product.ownerId == id ? deleteProduct.mutate(product.id) : null
                 ))
                 deleteMany.mutate({fridgeId: props.fridge.id, ids: toBeDeleted})
               }

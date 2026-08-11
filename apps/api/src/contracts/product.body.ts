@@ -5,16 +5,14 @@ import { IsNumber, IsOptional, IsString } from "class-validator";
 
 @Exclude()
 export class ProductBody {
-    @ApiPropertyOptional()
+    @ApiProperty()
     @Expose()
     @IsString()
-    @IsOptional()
     public name: string;
 
-    @ApiPropertyOptional()
+    @ApiProperty()
     @Expose()
     @IsNumber()
-    @IsOptional()
     public size: number;
 
     @ApiPropertyOptional({nullable: true})

@@ -11,7 +11,6 @@ import {
 } from "@node-course/api-sdk";
 
 const RECIPES_KEY = ["recipes"];
-const AI_RECIPE_KEY = ["aiRecipe"];
 
 export function useRecipes(search: string) {
   return useQuery({
@@ -71,8 +70,6 @@ export function useGetAiRecipe() {
       if (error) throw error;
       return data ?? "";
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: AI_RECIPE_KEY });
-    },
+
   })
 }
