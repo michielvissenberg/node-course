@@ -9,6 +9,8 @@ import { get } from "../../controllers/products/handlers/get.handler";
 import { getList } from "../../controllers/products/handlers/getList.handler";
 import { update } from "../../controllers/products/handlers/update.handler";
 import { createFridge} from "../../controllers/fridges/handlers/create.handler";
+import { updateManyProducts } from "../../controllers/products/handlers/updateMany.handler";
+import { deleteManyProducts } from "../../controllers/products/handlers/deleteMany.handler";
 
 const productFixtures = [
     {
@@ -28,6 +30,7 @@ describe("Handler tests product", () => {
         // Clean up database
         await prisma.product.deleteMany();
         await prisma.fridge.deleteMany();
+        await prisma.user.deleteMany();
 
         // Create test products
         products = await Promise.all(
@@ -115,5 +118,27 @@ describe("Handler tests product", () => {
         }
         expect(true, "should have thrown an error").false;
     })
+    it("should update multiple entries' owner ids", async () => {
+        const user = prisma.user.create({
+            data: {
+                name: "name",
+                surname: "surname",
+                email: "email@email.com",
+                password: "password123",
+            },
+        })
+        const userId = (await user).id;
 
+        const ids: string[] = [products[0].id, products[1].id];
+        const res = await updateManyProducts( {fridgeId: undefined, ids: ids, newOwnerId: userId}, "1");
+
+        expect(res.count).equal(2);
+    })
+    it("should delete multiple entries", async () => {
+        const ids: string[] = [products[0].id, products[1].id];
+        const res = await deleteManyProducts( {fridgeId: undefined, ids: ids}, "1");
+
+        const count = await prisma.product.count();
+        expect(0).equal(count);
+    })
 });
