@@ -12,6 +12,7 @@ import { update } from "./handlers/update.handler";
 import { deleteProduct } from "./handlers/delete.handler";
 import { CurrentUser } from "../../decorators/user.decorator";
 import { deleteManyProducts } from "./handlers/deleteMany.handler";
+import { updateManyProducts } from "./handlers/updateMany.handler";
 
 @Controller("products")
 export class ProductController {
@@ -52,7 +53,25 @@ export class ProductController {
     async get(@Param("id") id: string): Promise<ProductView> {
         return get(id);
     }
-  
+      
+    @Patch("/deleteMany")
+    @UseGuards(JwtAuthGuard)
+    @ApiSecurity("x-auth")
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @ApiOperation({ operationId: "deleteMultiple", summary: "Delete products by list of ids" })
+    async deleteMany(@Body() body: {fridgeId: string | undefined, ids: string[]}, @CurrentUser("userId") userId: string) {
+        await deleteManyProducts(body, userId);
+    }
+
+    @Patch("/updateMany")
+    @UseGuards(JwtAuthGuard)
+    @ApiSecurity("x-auth")
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @ApiOperation({ operationId: "updateMultiple", summary: "Update products by list of ids" })
+    async updateMany(@Body() body: {fridgeId: string | undefined, ids: string[], newOwnerId: string}, @CurrentUser("userId") userId: string) {
+        await updateManyProducts(body, userId);
+    }
+    
     @Patch(":id")
     @UseGuards(JwtAuthGuard)
     @ApiSecurity("x-auth")
@@ -70,13 +89,5 @@ export class ProductController {
     async delete(@Param("id") id: string, @CurrentUser("userId") userId: string) {
         await deleteProduct(id, userId);
     }
-    
-    @Patch()
-    @UseGuards(JwtAuthGuard)
-    @ApiSecurity("x-auth")
-    @HttpCode(HttpStatus.NO_CONTENT)
-    @ApiOperation({ operationId: "deleteMultiple", summary: "Delete products by list of ids" })
-    async deleteMany(@Body() body: {fridgeId: string | undefined, ids: string[]}, @CurrentUser("userId") userId: string) {
-        await deleteManyProducts(body, userId);
-    }
+
 }

@@ -1,13 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useDeleteManyProducts, useDeleteProduct, useProducts, useUpdateProduct } from "@/lib/api-hooks.product";
+import { useDeleteManyProducts, useDeleteProduct, useProducts, useUpdateManyProducts } from "@/lib/api-hooks.product";
 import { getId } from "@/lib/auth";
 import { type FridgeView, type ProductView } from "@node-course/api-sdk";
 import ProductInList from "./productInList";
 import { useState } from "react";
 import { GiftForm } from "./gift-form";
 
-type Gifting = { mode: "gift"; product: ProductView } | null;
+type Gifting = { mode: "gift"; product: string[]  } | null;
 
 export default function SpecificFridge(props: {fridge: FridgeView}) {
   const [onlyShowMine, setOnlyShowMine] = useState<boolean>(false);
@@ -15,10 +15,11 @@ export default function SpecificFridge(props: {fridge: FridgeView}) {
 
   const productsQuery = useProducts(undefined, props.fridge.id);
   const deleteProduct = useDeleteProduct();
-  const updateProduct = useUpdateProduct();
   const deleteMany = useDeleteManyProducts();
+  const updateMany = useUpdateManyProducts();
   const toBeDeleted: string[] = [];
-  
+  const toBeUpdated: string[] = [];
+
   const id = getId();
 
   return (
@@ -50,9 +51,13 @@ export default function SpecificFridge(props: {fridge: FridgeView}) {
           <Button 
             variant="secondary"
             onClick={() => {
-                productsQuery.data?.map((product) => (
-                  setGifting({ mode: "gift", product })
-              ))
+              productsQuery.data?.map((product) => {
+                product.ownerId == id ? 
+                  toBeUpdated.push(product.id)
+                : 
+                  null
+                })
+              setGifting({mode: "gift", product: toBeUpdated})
             }}
           >
             Gift all 
@@ -87,18 +92,14 @@ export default function SpecificFridge(props: {fridge: FridgeView}) {
             <GiftForm 
               onCancel={() => setGifting(null)}
               onSubmit={(newOwner: string) => {
-                productsQuery.data?.map((product) => (
-                  product.ownerId == id ? 
-                    updateProduct.mutate(
-                      { id: product.id, body: {
-                        name: product.name,
-                        size: product.size,
-                        ownerId: newOwner,
-                        fridgeId: product.fridgeId
-                      }},
-                      { onSuccess: () => setGifting(null) }
-                    ) : null
-                ))
+                updateMany.mutate(
+                  {
+                    fridgeId: props.fridge.id,
+                    ids: gifting.product,
+                    newOwnerId: newOwner,
+                  },
+                  { onSuccess: () => setGifting(null)}
+                )
               }}
             />
           </Card>

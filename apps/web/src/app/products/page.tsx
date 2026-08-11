@@ -9,6 +9,7 @@ import {
   useProducts,
   useUpdateProduct,
   useDeleteManyProducts,
+  useUpdateManyProducts,
 } from "@/lib/api-hooks.product";
 import { clearToken, getId, isAuthenticated } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,7 @@ import ProductInList from "@/components/productInList";
 import { GiftForm } from "@/components/gift-form";
 
 type Editing = { mode: "create" } | { mode: "edit"; product: ProductView } | null;
-type Gifting = { mode: "gift"; product: ProductView } | null;
+type Gifting = { mode: "gift"; product: string[] } | null;
 
 export default function ProductsPage() {
   const router = useRouter();
@@ -41,9 +42,12 @@ export default function ProductsPage() {
   const productsQuery = useProducts(search, undefined, searchAddress);
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
+  const updateMany = useUpdateManyProducts();
   const deleteProduct = useDeleteProduct();
   const deleteMany = useDeleteManyProducts();
   const toBeDeleted: string[] = [];
+  const toBeUpdated: string[] = [];
+
   
   const id = getId();
 
@@ -152,9 +156,13 @@ export default function ProductsPage() {
           <Button 
             variant="secondary"
             onClick={() => {
-                productsQuery.data?.map((product) => (
-                  setGifting({ mode: "gift", product })
-              ))
+              productsQuery.data?.map((product) => {
+                product.ownerId == id ? 
+                  toBeUpdated.push(product.id)
+                : 
+                  null
+                })
+              setGifting({mode: "gift", product: toBeUpdated})
             }}
           >
             Gift all 
@@ -183,23 +191,19 @@ export default function ProductsPage() {
         <div className="fixed inset-0 flex items-center justify-center bg-slate-900/40 p-4">
           <Card className="w-full max-w-md p-6">
             <h2 className="mb-4 text-lg font-semibold">
-              Gift all your products in this fridge to another person
+              Gift all your products to another person
             </h2>
             <GiftForm 
               onCancel={() => setGifting(null)}
               onSubmit={(newOwner: string) => {
-                productsQuery.data?.map((product) => (
-                  product.ownerId == id ? 
-                    updateProduct.mutate(
-                      { id: product.id, body: {
-                        name: product.name,
-                        size: product.size,
-                        ownerId: newOwner,
-                        fridgeId: product.fridgeId
-                      }},
-                      { onSuccess: () => setGifting(null) }
-                    ) : null
-                ))
+                updateMany.mutate(
+                  {
+                    fridgeId: undefined,
+                    ids: gifting.product,
+                    newOwnerId: newOwner,
+                  },
+                  { onSuccess: () => setGifting(null)}
+                )
               }}
             />
           </Card>

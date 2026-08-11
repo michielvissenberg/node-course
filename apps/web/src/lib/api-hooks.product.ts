@@ -7,7 +7,8 @@ import {
   deleteMultiple,
   listProducts, 
   type ProductBody,
-  updateProduct, 
+  updateProduct,
+  updateMultiple,
 } from "@node-course/api-sdk";
 
 const PRODUCT_KEY = ["product"];
@@ -73,6 +74,17 @@ export function useDeleteManyProducts() {
   return useMutation({
     mutationFn: async ({fridgeId, ids}: {fridgeId?: string, ids: string[]}) => {
       const { error } = await deleteMultiple({body: {fridgeId, ids}} as any);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: PRODUCT_KEY }),
+  });
+}
+
+export function useUpdateManyProducts() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({fridgeId, ids, newOwnerId}: {fridgeId?: string, ids: string[], newOwnerId: string}) => {
+      const { error } = await updateMultiple({body: {fridgeId, ids, newOwnerId}} as any);
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: PRODUCT_KEY }),

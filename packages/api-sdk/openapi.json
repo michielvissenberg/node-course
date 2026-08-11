@@ -264,24 +264,6 @@
         "tags": [
           "Product"
         ]
-      },
-      "patch": {
-        "operationId": "deleteMultiple",
-        "parameters": [],
-        "responses": {
-          "204": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "x-auth": []
-          }
-        ],
-        "summary": "Delete products by list of ids",
-        "tags": [
-          "Product"
-        ]
       }
     },
     "/api/products/{id}": {
@@ -372,6 +354,46 @@
           }
         ],
         "summary": "Delete product by id",
+        "tags": [
+          "Product"
+        ]
+      }
+    },
+    "/api/products/deleteMany": {
+      "patch": {
+        "operationId": "deleteMultiple",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "x-auth": []
+          }
+        ],
+        "summary": "Delete products by list of ids",
+        "tags": [
+          "Product"
+        ]
+      }
+    },
+    "/api/products/updateMany": {
+      "patch": {
+        "operationId": "updateMultiple",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "x-auth": []
+          }
+        ],
+        "summary": "Update products by list of ids",
         "tags": [
           "Product"
         ]

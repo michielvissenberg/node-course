@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateFridgeData, CreateFridgeResponses, CreateProductData, CreateProductResponses, CreateRecipeData, CreateRecipeResponses, CreateUserData, CreateUserResponses, DeleteFridgeData, DeleteFridgeResponses, DeleteMultipleData, DeleteMultipleResponses, DeleteProductData, DeleteProductResponses, DeleteRecipeData, DeleteRecipeResponses, DeleteUserData, DeleteUserResponses, GetFridgeData, GetFridgeResponses, GetProductData, GetProductResponses, GetRecipeData, GetRecipeResponses, GetUserData, GetUserResponses, ListFridgesData, ListFridgesResponses, ListProductsData, ListProductsResponses, ListRecipesData, ListRecipesResponses, ListUsersData, ListUsersResponses, LoginData, LoginResponses, UpdateFridgeData, UpdateFridgeResponses, UpdateProductData, UpdateProductResponses, UpdateRecipeData, UpdateRecipeResponses, UpdateUserData, UpdateUserResponses } from './types.gen';
+import type { CreateFridgeData, CreateFridgeResponses, CreateProductData, CreateProductResponses, CreateRecipeData, CreateRecipeResponses, CreateUserData, CreateUserResponses, DeleteFridgeData, DeleteFridgeResponses, DeleteMultipleData, DeleteMultipleResponses, DeleteProductData, DeleteProductResponses, DeleteRecipeData, DeleteRecipeResponses, DeleteUserData, DeleteUserResponses, GetFridgeData, GetFridgeResponses, GetProductData, GetProductResponses, GetRecipeData, GetRecipeResponses, GetUserData, GetUserResponses, ListFridgesData, ListFridgesResponses, ListProductsData, ListProductsResponses, ListRecipesData, ListRecipesResponses, ListUsersData, ListUsersResponses, LoginData, LoginResponses, UpdateFridgeData, UpdateFridgeResponses, UpdateMultipleData, UpdateMultipleResponses, UpdateProductData, UpdateProductResponses, UpdateRecipeData, UpdateRecipeResponses, UpdateUserData, UpdateUserResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -80,15 +80,6 @@ export const listProducts = <ThrowOnError extends boolean = false>(options?: Opt
 });
 
 /**
- * Delete products by list of ids
- */
-export const deleteMultiple = <ThrowOnError extends boolean = false>(options?: Options<DeleteMultipleData, ThrowOnError>): RequestResult<DeleteMultipleResponses, unknown, ThrowOnError> => (options?.client ?? client).patch<DeleteMultipleResponses, unknown, ThrowOnError>({
-    security: [{ name: 'x-auth', type: 'apiKey' }],
-    url: '/api/products',
-    ...options
-});
-
-/**
  * Create a new product
  */
 export const createProduct = <ThrowOnError extends boolean = false>(options: Options<CreateProductData, ThrowOnError>): RequestResult<CreateProductResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateProductResponses, unknown, ThrowOnError>({
@@ -130,6 +121,24 @@ export const updateProduct = <ThrowOnError extends boolean = false>(options: Opt
         'Content-Type': 'application/json',
         ...options.headers
     }
+});
+
+/**
+ * Delete products by list of ids
+ */
+export const deleteMultiple = <ThrowOnError extends boolean = false>(options?: Options<DeleteMultipleData, ThrowOnError>): RequestResult<DeleteMultipleResponses, unknown, ThrowOnError> => (options?.client ?? client).patch<DeleteMultipleResponses, unknown, ThrowOnError>({
+    security: [{ name: 'x-auth', type: 'apiKey' }],
+    url: '/api/products/deleteMany',
+    ...options
+});
+
+/**
+ * Update products by list of ids
+ */
+export const updateMultiple = <ThrowOnError extends boolean = false>(options?: Options<UpdateMultipleData, ThrowOnError>): RequestResult<UpdateMultipleResponses, unknown, ThrowOnError> => (options?.client ?? client).patch<UpdateMultipleResponses, unknown, ThrowOnError>({
+    security: [{ name: 'x-auth', type: 'apiKey' }],
+    url: '/api/products/updateMany',
+    ...options
 });
 
 /**

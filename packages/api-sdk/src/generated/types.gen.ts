@@ -189,19 +189,6 @@ export type ListProductsResponses = {
 
 export type ListProductsResponse = ListProductsResponses[keyof ListProductsResponses];
 
-export type DeleteMultipleData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/products';
-};
-
-export type DeleteMultipleResponses = {
-    204: void;
-};
-
-export type DeleteMultipleResponse = DeleteMultipleResponses[keyof DeleteMultipleResponses];
-
 export type CreateProductData = {
     body: ProductBody;
     path?: never;
@@ -258,6 +245,32 @@ export type UpdateProductData = {
 export type UpdateProductResponses = {
     200: unknown;
 };
+
+export type DeleteMultipleData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/products/deleteMany';
+};
+
+export type DeleteMultipleResponses = {
+    204: void;
+};
+
+export type DeleteMultipleResponse = DeleteMultipleResponses[keyof DeleteMultipleResponses];
+
+export type UpdateMultipleData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/products/updateMany';
+};
+
+export type UpdateMultipleResponses = {
+    204: void;
+};
+
+export type UpdateMultipleResponse = UpdateMultipleResponses[keyof UpdateMultipleResponses];
 
 export type ListFridgesData = {
     body?: never;
