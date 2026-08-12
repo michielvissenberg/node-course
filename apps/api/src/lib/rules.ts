@@ -23,11 +23,23 @@ export const assertOwnerExists = async (ownerId: string) => {
 };
 
 /**
- * Throws unless the fridge exists and still has room for a product of `size`.
+ * How much of a fridge is taken up by the products currently inside it.
  *
  * `excludeProductId` leaves one product out of the total, so updating a product
  * that is already in the fridge does not count its old size twice.
  */
+const usedSpaceIn = async (fridgeId: string, excludeProductId?: string) => {
+	const products = await prisma.product.findMany({
+		where: {
+			fridgeId,
+			...(excludeProductId && { id: { not: excludeProductId } }),
+		},
+	});
+
+	return products.reduce((total, product) => total + product.size, 0);
+};
+
+/** Throws unless the fridge exists and still has room for a product of `size`. */
 export const assertFitsInFridge = async (
 	fridgeId: string,
 	size: number,
@@ -39,15 +51,24 @@ export const assertFitsInFridge = async (
 		throw new NotFoundException("Fridge not found");
 	}
 
-	const products = await prisma.product.findMany({
-		where: {
-			fridgeId,
-			...(excludeProductId && { id: { not: excludeProductId } }),
-		},
-	});
-	const usedSize = products.reduce((total, product) => total + product.size, 0);
+	const usedSize = await usedSpaceIn(fridgeId, excludeProductId);
 
 	if (usedSize + size > fridge.capacity) {
+		throw new ImATeapotException("Fridge too small");
+	}
+};
+
+/**
+ * Throws unless a new capacity still covers what the fridge already holds, so a
+ * fridge cannot be shrunk out from under its own contents.
+ */
+export const assertCapacityFitsContents = async (
+	fridgeId: string,
+	capacity: number
+) => {
+	const usedSize = await usedSpaceIn(fridgeId);
+
+	if (usedSize > capacity) {
 		throw new ImATeapotException("Fridge too small");
 	}
 };

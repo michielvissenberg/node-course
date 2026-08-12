@@ -26,6 +26,7 @@ describe("Handler tests fridge", () => {
     let fridges: any[];
     beforeEach(async () => {
         // Clean up database
+        await prisma.product.deleteMany();
         await prisma.fridge.deleteMany();
 
         // Create test fridges
@@ -105,6 +106,35 @@ describe("Handler tests fridge", () => {
         expect(res.address).equal("Eikenlaan 7");
         expect(res.floor).equal(1);
         expect(res.capacity).equal(100);
+    });
+
+    it("should fail when shrinking a fridge below what is already inside", async () => {
+        const fridge = fridges[0];
+        await prisma.product.create({
+            data: { name: "big", size: 80, fridgeId: fridge.id },
+        });
+
+        try {
+            await update(fridge.id, { capacity: 50 });
+        } catch (error: any) {
+            expect(error.message).equal("Fridge too small");
+            // the rejected capacity must not have been written
+            const stored = await prisma.fridge.findUnique({ where: { id: fridge.id } });
+            expect(stored!.capacity).equal(100);
+            return;
+        }
+        expect(true, "should have thrown an error").false;
+    });
+
+    it("should allow shrinking a fridge to exactly its contents", async () => {
+        const fridge = fridges[0];
+        await prisma.product.create({
+            data: { name: "big", size: 80, fridgeId: fridge.id },
+        });
+
+        const res = await update(fridge.id, { capacity: 80 });
+
+        expect(res.capacity).equal(80);
     });
 
     it("should delete fridge by id", async () => {
