@@ -9,7 +9,7 @@ import {
   useUpdateUser,
   useUsers,
 } from "@/lib/api-hooks.user";
-import { clearToken, isAuthenticated } from "@/lib/auth";
+import { clearToken, getId, isAuthenticated } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -38,6 +38,7 @@ export default function UsersPage() {
 
   if (!authChecked) return null;
 
+  const id = getId();
   const logout = () => {
     clearToken();
     router.replace("/login");
@@ -90,23 +91,27 @@ export default function UsersPage() {
               <p className="text-sm text-slate-500">{user.email}</p>
             </div>
             <div className="flex gap-2">
-              <Button
-                variant="secondary"
-                onClick={() => setEditing({ mode: "edit", user })}
-              >
-                Edit
-              </Button>
-              <Button
-                variant="danger"
-                disabled={deleteUser.isPending}
-                onClick={() => {
-                  if (confirm(`Delete ${user.name}?`)) {
-                    deleteUser.mutate(user.id);
-                  }
-                }}
-              >
-                Delete
-              </Button>
+              {user.id == id && (
+                <>
+                  <Button
+                    variant="secondary"
+                    onClick={() => setEditing({ mode: "edit", user })}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="danger"
+                    disabled={deleteUser.isPending}
+                    onClick={() => {
+                      if (confirm(`Delete ${user.name}?`)) {
+                        deleteUser.mutate(user.id, {onSuccess: logout})
+                      }
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         ))}
@@ -121,7 +126,7 @@ export default function UsersPage() {
             <UserForm
               initialValues={
                 editing.mode === "edit"
-                  ? { name: editing.user.name, email: editing.user.email }
+                  ? { name: editing.user.name, surname: editing.user.surname, email: editing.user.email }
                   : undefined
               }
               submitLabel={editing.mode === "create" ? "Create" : "Save"}

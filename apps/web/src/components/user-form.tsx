@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
+  surname: z.string().min(1, "Surname is required"),
   email: z.email("Enter a valid email"),
   password: z.string().optional(),
 });
@@ -24,7 +25,7 @@ export function UserForm({
   onSubmit,
   onCancel,
 }: {
-  initialValues?: { name: string; email: string };
+  initialValues?: { name: string; surname: string, email: string };
   submitLabel: string;
   pending: boolean;
   onSubmit: (body:  UpdateUserBody) => void;
@@ -38,6 +39,7 @@ export function UserForm({
     resolver: zodResolver(schema),
     defaultValues: {
       name: initialValues?.name ?? "",
+      surname: initialValues?.surname ?? "",
       email: initialValues?.email ?? "",
       password: undefined,
     },
@@ -56,6 +58,13 @@ export function UserForm({
         <Input id="name" {...register("name")} />
         {errors.name && (
           <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+        )}
+      </div>
+      <div>
+        <Label htmlFor="name">Surname</Label>
+        <Input id="surname" {...register("surname")} />
+        {errors.surname && (
+          <p className="mt-1 text-sm text-red-600">{errors.surname.message}</p>
         )}
       </div>
       <div>
