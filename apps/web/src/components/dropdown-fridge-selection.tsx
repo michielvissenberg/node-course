@@ -23,15 +23,7 @@ export function Dropdown({
             className={`relative flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100 rounded-md`}
             onClick={() => {
               updateProduct.mutate(
-                { 
-                  id: product.id, 
-                  body: { 
-                    name: product.name, 
-                    size: product.size, 
-                    ownerId: product.ownerId, 
-                    fridgeId: fridge.id, 
-                  } 
-                },
+                { id: product.id, body: { fridgeId: fridge.id } },
                 {
                   onSuccess
                 }

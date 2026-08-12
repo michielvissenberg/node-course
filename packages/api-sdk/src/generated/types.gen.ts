@@ -40,6 +40,13 @@ export type ProductView = {
     fridgeId?: string;
 };
 
+export type UpdateProductBody = {
+    name?: string;
+    size?: number;
+    ownerId?: string | null;
+    fridgeId?: string | null;
+};
+
 export type FridgeBody = {
     address: string;
     floor: number;
@@ -248,7 +255,7 @@ export type GetProductResponses = {
 };
 
 export type UpdateProductData = {
-    body: ProductBody;
+    body: UpdateProductBody;
     path: {
         id: string;
     };

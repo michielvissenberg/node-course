@@ -98,6 +98,14 @@ describe("Handler tests", () => {
 			expect(res.name).equal("test1");
 		});
 
+		it("should update user surname", async () => {
+			const id = users[0].id;
+			const res = await update(id, { surname: "Updated" }, id);
+
+			expect(res.surname).equal("Updated");
+			expect(res.name).equal("test1");
+		});
+
 		it("should delete user by id", async () => {
 			const initialCount = await prisma.user.count();
 			await deleteUser(users[0].id, users[0].id);

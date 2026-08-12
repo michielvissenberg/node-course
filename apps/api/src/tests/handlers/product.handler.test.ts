@@ -148,11 +148,68 @@ describe("Handler tests product", () => {
         expect(res.fridgeId).equal(fridgeId);
     })
 
+    it("should keep the product in its fridge when the body omits fridgeId", async () => {
+        const id = products[0].id;
+        await update(id, { fridgeId: fridge.id }, "1");
+
+        const res = await update(id, { name: "renamed" }, "1");
+
+        expect(res.name).equal("renamed");
+        expect(res.fridgeId).equal(fridge.id);
+    })
+
+    it("should take the product out of its fridge on an explicit null", async () => {
+        const id = products[0].id;
+        await update(id, { fridgeId: fridge.id }, "1");
+
+        const res = await update(id, { fridgeId: null }, "1");
+
+        expect(res.fridgeId).equal(null);
+    })
+
+    it("should fail when growing a product already in a fridge past capacity", async () => {
+        const id = products[0].id;
+        await update(id, { fridgeId: fridge.id }, "1");
+
+        try {
+            await update(id, { size: 101 }, "1");
+        } catch (error: any) {
+            expect(error.message).equal("Fridge too small")
+            return
+        }
+        expect(true, "should have thrown an error").false;
+    })
+
     it("should fail when putting too large product in fridge", async () => {
         try {
             await create("1", {name: "test", size: 101, fridgeId: fridge.id})
         } catch (error: any) {
             expect(error.message).equal("Fridge too small")
+            // the rejected product must not have been written to the fridge
+            const stored = await prisma.product.findMany({where: {fridgeId: fridge.id}});
+            expect(stored).length(0);
+            return
+        }
+        expect(true, "should have thrown an error").false;
+    })
+
+    it("should allow a product that exactly fills the fridge", async () => {
+        const res = await create("1", {name: "test", size: 100, fridgeId: fridge.id});
+
+        expect(res.fridgeId).equal(fridge.id);
+    })
+
+    it("should fail when a product no longer fits next to what is already inside", async () => {
+        await create("1", {name: "first", size: 60, fridgeId: fridge.id});
+
+        try {
+            await create("1", {name: "second", size: 41, fridgeId: fridge.id})
+        } catch (error: any) {
+            expect(error.message).equal("Fridge too small")
+            // only the first product may be in the fridge
+            const stored = await prisma.product.findMany({where: {fridgeId: fridge.id}});
+            expect(stored).length(1);
+            expect(stored[0].name).equal("first");
             return
         }
         expect(true, "should have thrown an error").false;

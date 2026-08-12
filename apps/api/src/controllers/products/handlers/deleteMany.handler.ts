@@ -1,34 +1,25 @@
-import { ForbiddenException, NotFoundException } from "@nestjs/common";
 import { prisma } from "../../../lib/prisma";
+import { assertProductsAreOwnedBy } from "../../../lib/rules";
 
-export const deleteManyProducts = async (body: {fridgeId: string | undefined, ids: string[]}, userId: string) => {
-    
-    const existingProducts = await prisma.product.findMany({
-        where: { id: { in: body.ids } },
+export type DeleteManyProductsBody = {
+    fridgeId?: string;
+    ids: string[];
+};
+
+export const deleteManyProducts = async (
+    body: DeleteManyProductsBody,
+    userId: string
+) => {
+    await assertProductsAreOwnedBy(
+        body.ids,
+        userId,
+        "cannot delete a product of another user"
+    );
+
+    await prisma.product.deleteMany({
+        where: {
+            id: { in: body.ids },
+            ...(body.fridgeId && { fridgeId: body.fridgeId }),
+        },
     });
-    
-    if (!existingProducts || existingProducts.length !== body.ids.length) {
-        throw new NotFoundException("At least one product not found");
-    }
-    
-    existingProducts.map((product) => {
-        if (product.ownerId != null) {
-            if (product.ownerId !== userId) {
-                throw new ForbiddenException("cannot delete a product of another user");
-            }
-        }
-    })
-    if (body.fridgeId) {
-        const fridge = await prisma.fridge.findUnique({where: {id: body.fridgeId}});
-        await prisma.product.deleteMany({
-            where: {
-                id: {in: body.ids},
-                fridgeId: fridge.id,
-            }
-        })
-    } else {
-        await prisma.product.deleteMany({
-            where: { id: { in: body.ids } },
-        });
-    }
 };

@@ -311,7 +311,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ProductBody"
+                "$ref": "#/components/schemas/UpdateProductBody"
               }
             }
           }
@@ -924,6 +924,25 @@
           "name",
           "size"
         ]
+      },
+      "UpdateProductBody": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          },
+          "ownerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "fridgeId": {
+            "type": "string",
+            "nullable": true
+          }
+        }
       },
       "FridgeBody": {
         "type": "object",

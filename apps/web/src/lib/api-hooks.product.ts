@@ -7,6 +7,7 @@ import {
   deleteMultiple,
   listProducts, 
   type ProductBody,
+  type UpdateProductBody,
   updateProduct,
   updateMultiple,
 } from "@node-course/api-sdk";
@@ -47,7 +48,7 @@ export function useCreateProduct() {
 export function useUpdateProduct() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, body }: { id: string; body: ProductBody }) => {
+    mutationFn: async ({ id, body }: { id: string; body: UpdateProductBody }) => {
       const { data, error } = await updateProduct({ path: { id }, body });
       if (error) {
         throw error;

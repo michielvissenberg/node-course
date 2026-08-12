@@ -1,53 +1,26 @@
-import { ForbiddenException, ImATeapotException, NotFoundException } from "@nestjs/common";
+import { ForbiddenException } from "@nestjs/common";
 import { ProductBody } from "../../../contracts/product.body";
+import { productData } from "../../../contracts/data.schemas";
+import { toCreateData } from "../../../lib/data";
 import { prisma } from "../../../lib/prisma";
-
+import { assertFitsInFridge, assertOwnerExists } from "../../../lib/rules";
 
 export const create = async (userId: string, body: ProductBody) => {
-    if (body.ownerId != null) {
-        if (userId !== body.ownerId) {
-            throw new ForbiddenException("cannot create a product for another user");
-        }
+    if (body.ownerId != null && userId !== body.ownerId) {
+        throw new ForbiddenException("cannot create a product for another user");
     }
 
-    const data: any = {};
-    
-    if (body.name !== undefined) data.name = body.name;
-    if (body.size !== undefined) data.size = body.size;
+    const data = toCreateData(productData, body);
+
     // assign fridge to product (put product in fridge/delete product from fridge)
-    if (body.fridgeId != null) {
-        if (await prisma.fridge.findUnique({ where: { id: body.fridgeId }}) !== null) {
-            data.fridgeId = body.fridgeId;
-        } else {
-            throw new NotFoundException("Fridge not found");
-        }
+    if (data.fridgeId != null) {
+        await assertFitsInFridge(data.fridgeId, data.size);
     }
-    // assign owner to this product (owner gets specific product/owner gifts product)
-    if (body.ownerId != null) {
-        if (await prisma.user.findUnique({ where: { id: body.ownerId }}) !== null ) {
-            data.ownerId = body.ownerId;
-        } else {
-            throw new NotFoundException("Owner not found");
-        }
-    }
-    
-    const product = await prisma.product.create({
-        data: data,
-    });
 
-    if (product.fridgeId) {
-        const fridge = await prisma.fridge.findUnique({where: {id: product.fridgeId}})
-        if (fridge) {
-            const products = await prisma.product.findMany({where: {fridgeId: fridge.id}})
-            let totalSize = 0;
-            products.map((product) => {
-                totalSize += product.size;
-            })
-            if (totalSize > fridge.capacity) {
-                prisma.product.delete({where: {id: product.id} })
-                throw new ImATeapotException("Fridge too small")
-            }
-        }
+    // assign owner to this product (owner gets specific product/owner gifts product)
+    if (data.ownerId != null) {
+        await assertOwnerExists(data.ownerId);
     }
-    return product;
+
+    return prisma.product.create({ data });
 };

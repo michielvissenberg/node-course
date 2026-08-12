@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { ProductBody } from "../../contracts/product.body";
+import { UpdateProductBody } from "../../contracts/update-product.body";
 import { ProductView } from "../../contracts/product.view";
 import { create } from "./handlers/create.handler";
 import { Serialize } from "../../decorators/serialize.decorator";
@@ -11,8 +12,8 @@ import { get } from "./handlers/get.handler";
 import { update } from "./handlers/update.handler";
 import { deleteProduct } from "./handlers/delete.handler";
 import { CurrentUser } from "../../decorators/user.decorator";
-import { deleteManyProducts } from "./handlers/deleteMany.handler";
-import { updateManyProducts } from "./handlers/updateMany.handler";
+import { deleteManyProducts, DeleteManyProductsBody } from "./handlers/deleteMany.handler";
+import { updateManyProducts, UpdateManyProductsBody } from "./handlers/updateMany.handler";
 
 @Controller("products")
 export class ProductController {
@@ -41,8 +42,8 @@ export class ProductController {
         description: "Product(s) retrieved successfully",
         type: [ProductView],
     })
-    async getList(@Query() query: SearchProductsQuery, @CurrentUser("userId") userId: string): Promise<ProductView[]> {
-        return await getList(userId, query.search, query.fridgeId, query.fridgeLocation, query.ownerId);
+    async getList(@Query() query: SearchProductsQuery): Promise<ProductView[]> {
+        return await getList(query.search, query.fridgeId, query.fridgeLocation, query.ownerId);
     }
 
     @Get(":id")
@@ -59,7 +60,7 @@ export class ProductController {
     @ApiSecurity("x-auth")
     @HttpCode(HttpStatus.NO_CONTENT)
     @ApiOperation({ operationId: "deleteMultiple", summary: "Delete products by list of ids" })
-    async deleteMany(@Body() body: {fridgeId: string | undefined, ids: string[]}, @CurrentUser("userId") userId: string) {
+    async deleteMany(@Body() body: DeleteManyProductsBody, @CurrentUser("userId") userId: string) {
         await deleteManyProducts(body, userId);
     }
 
@@ -68,7 +69,7 @@ export class ProductController {
     @ApiSecurity("x-auth")
     @HttpCode(HttpStatus.NO_CONTENT)
     @ApiOperation({ operationId: "updateMultiple", summary: "Update products by list of ids" })
-    async updateMany(@Body() body: {fridgeId: string | undefined, ids: string[], newOwnerId: string}, @CurrentUser("userId") userId: string) {
+    async updateMany(@Body() body: UpdateManyProductsBody, @CurrentUser("userId") userId: string) {
         await updateManyProducts(body, userId);
     }
     
@@ -77,7 +78,7 @@ export class ProductController {
     @ApiSecurity("x-auth")
     @Serialize(ProductView)
     @ApiOperation({ operationId: "updateProduct", summary: "Update a product" })
-    async update(@Param("id") id: string,  @Body() body: ProductBody, @CurrentUser("userId") userId: string): Promise<ProductView> {
+    async update(@Param("id") id: string,  @Body() body: UpdateProductBody, @CurrentUser("userId") userId: string): Promise<ProductView> {
         return update(id, body, userId);
     }
   

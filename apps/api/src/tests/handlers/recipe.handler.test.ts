@@ -109,6 +109,14 @@ describe("Handler tests recipe", () => {
         expect(res.ingredients[0]).equal("test");
     });
 
+    it("should update recipe steps", async () => {
+        const id = recipes[0].id;
+        const res = await update(id, { steps: ["chop", "fry"] }, id);
+
+        expect(res.steps).deep.equal(["chop", "fry"]);
+        expect(res.name).equal("test1");
+    });
+
     it("should correctly connect a user to a recipe", async () => {
         const userId = (await prisma.user.findFirst())!.id;
         const body = {

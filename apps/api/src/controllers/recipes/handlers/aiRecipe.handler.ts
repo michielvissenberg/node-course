@@ -7,12 +7,7 @@ export const getAiRecipe = async (userId: string) => {
     const products = await prisma.product.findMany({
         where: {ownerId: userId},
     });
-    const productList: string[] = [];
-    if (products) {
-        products.map((product) => {
-            productList.push(product.name);
-          });
-    };
+    const productList = products.map((product) => product.name);
 
     const {output: recipe} = await generateText({
         model: anthropic('claude-haiku-4-5-20251001'),

@@ -89,6 +89,15 @@ describe("Handler tests fridge", () => {
         expect(res.address).equal("Dennenlaan 1");
     });
 
+    it("should update fridge address", async () => {
+        const id = fridges[0].id;
+        const res = await update(id, { address: "Eikenlaan 7" });
+
+        expect(res.address).equal("Eikenlaan 7");
+        expect(res.floor).equal(1);
+        expect(res.capacity).equal(100);
+    });
+
     it("should delete fridge by id", async () => {
         const initialCount = await prisma.fridge.count();
         await deleteFridge(fridges[0].id);

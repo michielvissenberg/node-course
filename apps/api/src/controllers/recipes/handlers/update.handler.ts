@@ -1,38 +1,31 @@
 import { ForbiddenException, NotFoundException } from "@nestjs/common";
+import { RecipeBody } from "../../../contracts/recipe.body";
+import { recipeData } from "../../../contracts/data.schemas";
+import { toUpdateData } from "../../../lib/data";
 import { prisma } from "../../../lib/prisma";
+import { assertOwnerExists } from "../../../lib/rules";
 
-export const update = async (id: string, body, userId) => {
-    const recipe = await prisma.recipe.findUnique({
-        where: { id },
-    });
+export const update = async (
+    id: string,
+    body: Partial<RecipeBody>,
+    userId: string
+) => {
+    const recipe = await prisma.recipe.findUnique({ where: { id } });
 
     if (!recipe) {
         throw new NotFoundException("Recipe not found");
     }
 
-    if (recipe.ownerId !== null) { 
-        if (userId !== recipe.ownerId) {
-            throw new ForbiddenException("cannot change another user's recipes");
-        }
+    if (recipe.ownerId != null && recipe.ownerId !== userId) {
+        throw new ForbiddenException("cannot change another user's recipes");
     }
-    
-    const updateData: any = {};
-    if (body.name !== undefined) updateData.name = body.name;
-    if (body.description !== undefined) updateData.description = body.description;
+
+    const data = toUpdateData(recipeData, body);
+
     // assign owner to this recipe (user changes recipe)
-    if (body.ownerId != null) {
-        if (await prisma.user.findUnique({ where: { id: body.ownerId }}) !== null) {
-            updateData.ownerId = body.ownerId;
-        } else {
-            throw new NotFoundException("Owner not found");
-        }
+    if (data.ownerId != null) {
+        await assertOwnerExists(data.ownerId);
     }
-    if (body.ingredients != null) {
-        updateData.ingredients = body.ingredients.slice();
-    }
-    
-    return prisma.recipe.update({
-        where: { id },
-        data: updateData,
-    });
+
+    return prisma.recipe.update({ where: { id }, data });
 };

@@ -1,14 +1,10 @@
 import { FridgeBody } from "../../../contracts/fridge.body";
+import { fridgeData } from "../../../contracts/data.schemas";
+import { toCreateData } from "../../../lib/data";
 import { prisma } from "../../../lib/prisma";
 
 export const createFridge = async (body: FridgeBody) => {
-    const fridge = await prisma.fridge.create({
-        data: {
-            address: body.address,
-            floor: body.floor,
-            capacity: body.capacity,
-        },
+    return prisma.fridge.create({
+        data: toCreateData(fridgeData, body),
     });
-
-    return fridge;
 };

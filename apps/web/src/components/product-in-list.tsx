@@ -61,12 +61,7 @@ export default function ProductInList(props: {product: ProductView}) {
                 variant="secondary"
                 onClick={() => updateProduct.mutate({
                   id: props.product.id,
-                  body: {
-                    name: props.product.name,
-                    size: props.product.size,
-                    ownerId: id,
-                    fridgeId: null
-                  }
+                  body: { fridgeId: null }
                 })}
               >
                 Take out of fridge
@@ -77,13 +72,7 @@ export default function ProductInList(props: {product: ProductView}) {
                 variant="secondary"
                 onClick={() => {
                   updateProduct.mutate(
-                    { id: props.product.id, body: 
-                      {
-                        name: props.product.name,
-                        size: props.product.size,
-                        ownerId: id,
-                      } 
-                    },
+                    { id: props.product.id, body: { ownerId: id } },
                   );
                 }}
               >
@@ -198,13 +187,8 @@ export default function ProductInList(props: {product: ProductView}) {
             onCancel={() => setGifting(null)}
             onSubmit={(newOwner: string) => {
               updateProduct.mutate(
-                { id: product.id, body: {
-                  name: product.name,
-                  size: product.size,
-                  ownerId: newOwner,
-                  fridgeId: product.fridgeId
-                }},
-                { onSuccess: () => setGifting(null) } 
+                { id: product.id, body: { ownerId: newOwner } },
+                { onSuccess: () => setGifting(null) }
               )
             }}
           />

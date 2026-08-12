@@ -8,25 +8,25 @@ export class UpdateUserBody {
     @Expose()
     @IsString()
     @IsOptional()
-    public name: string;
+    public name?: string;
 
     @ApiPropertyOptional()
     @Expose()
     @IsString()
     @IsOptional()
-    public surname: string;
+    public surname?: string;
 
     
     @ApiPropertyOptional()
     @Expose()
     @IsEmail()
     @IsOptional()
-    public email: string;
+    public email?: string;
 
     @ApiPropertyOptional()
     @Expose()
     @IsString()
     @Length(8)
     @IsOptional()
-    public password: string;
+    public password?: string;
 }

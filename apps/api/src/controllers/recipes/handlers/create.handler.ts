@@ -1,35 +1,21 @@
-import { ForbiddenException, NotFoundException } from "@nestjs/common";
+import { ForbiddenException } from "@nestjs/common";
 import { RecipeBody } from "../../../contracts/recipe.body";
+import { recipeData } from "../../../contracts/data.schemas";
+import { toCreateData } from "../../../lib/data";
 import { prisma } from "../../../lib/prisma";
+import { assertOwnerExists } from "../../../lib/rules";
 
-export const create = async (body: RecipeBody, userId) => {
-    if (body.ownerId != null) {
-        if (userId !== body.ownerId) {
-            throw new ForbiddenException("cannot create a recipe for another user");
-        }
+export const create = async (body: RecipeBody, userId: string) => {
+    if (body.ownerId != null && userId !== body.ownerId) {
+        throw new ForbiddenException("cannot create a recipe for another user");
     }
 
-    const data: any = {};
-    if (body.name != undefined) data.name = body.name;
-    if (body.description !== undefined) data.description = body.description;
+    const data = toCreateData(recipeData, body);
+
     // assign owner to this recipe (user writes down recipe)
-    if (body.ownerId != null) {
-        if (await prisma.user.findUnique({ where: { id: body.ownerId }}) !== null) {
-            data.owner = {connect: {id: body.ownerId}}
-        } else {
-            throw new NotFoundException("Owner not found");
-        }
-    }
-    if (body.ingredients != null) {
-        data.ingredients = body.ingredients.slice();
-    }
-    if (body.steps != null) {
-        data.steps = body.steps.slice();
+    if (data.ownerId != null) {
+        await assertOwnerExists(data.ownerId);
     }
 
-    const recipe = await prisma.recipe.create({
-        data: data as RecipeBody,
-    });
-
-    return recipe;
+    return prisma.recipe.create({ data });
 };
