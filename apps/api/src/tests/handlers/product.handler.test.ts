@@ -23,9 +23,22 @@ const productFixtures = [
         size: 2,
     },
 ];
+const userFixture = {
+        name: "name",
+        surname: "surname",
+        email: "email@email.com",
+        password: "password123",
+};
+const fridgeFixture = {
+        address: "a", 
+        capacity: 100, 
+        floor: 1,
+};
 
 describe("Handler tests product", () => {
     let products: any[];
+    let user: any;
+    let fridge: any;
     beforeEach(async () => {
         // Clean up database
         await prisma.product.deleteMany();
@@ -43,6 +56,21 @@ describe("Handler tests product", () => {
                 });
             })
         );
+        user = await prisma.user.create({
+            data: {
+                name: userFixture.name,
+                surname: userFixture.surname,
+                email: userFixture.email,
+                password: userFixture.password,
+            },
+        });
+        fridge = await prisma.fridge.create({
+            data: {
+                address: fridgeFixture.address,
+                floor: fridgeFixture.floor,
+                capacity: fridgeFixture.capacity,
+            },
+        });
     });
 
     it("should get products", async () => {
@@ -97,36 +125,52 @@ describe("Handler tests product", () => {
         expect(initialCount - 1).equal(newCount);
     });
 
+    it("should correctly connect to a user", async () => {
+        const ownerId = (await prisma.user.findFirst())!.id;
+        const body = {
+            size: 3,
+            ownerId: ownerId,
+        };
+        const id = products[0].id;
+        const res = await update(id, body, "1");
+
+        expect(res.ownerId).equal(ownerId);
+    })
+
+    it("should correctly connect to a fridge", async () => {
+        const fridgeId = (await prisma.fridge.findFirst())!.id;
+        const body = {
+            size: 3,
+            fridgeId: fridgeId,
+        };
+        const id = products[0].id;
+        const res = await update(id, body, "1");
+
+        expect(res.fridgeId).equal(fridgeId);
+    })
+
     it("should fail when putting too large product in fridge", async () => {
-        const fridge = await createFridge({address: "a", capacity: 1, floor: 1})
         try {
-            await create("1", {name: "test", size: 2, fridgeId: fridge.id})
+            await create("1", {name: "test", size: 101, fridgeId: fridge.id})
         } catch (error: any) {
             expect(error.message).equal("Fridge too small")
             return
         }
         expect(true, "should have thrown an error").false;
     })
+
     it("should fail when updating too large product into fridge", async () => {
-        const fridge = await createFridge({address: "a", capacity: 1, floor: 1})
         try {
             const id = products[0].id;
-            await update(id, {name: "test1", size: 1.1, fridgeId: fridge.id}, "1");
+            await update(id, {name: "test1", size: 101, fridgeId: fridge.id}, "1");
         } catch (error: any) {
             expect(error.message).equal("Fridge too small")
             return
         }
         expect(true, "should have thrown an error").false;
     })
+
     it("should update multiple entries' owner ids", async () => {
-        const user = prisma.user.create({
-            data: {
-                name: "name",
-                surname: "surname",
-                email: "email@email.com",
-                password: "password123",
-            },
-        })
         const userId = (await user).id;
 
         const ids: string[] = [products[0].id, products[1].id];
@@ -134,6 +178,7 @@ describe("Handler tests product", () => {
 
         expect(res.count).equal(2);
     })
+
     it("should delete multiple entries", async () => {
         const ids: string[] = [products[0].id, products[1].id];
         const res = await deleteManyProducts( {fridgeId: undefined, ids: ids}, "1");

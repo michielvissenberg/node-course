@@ -29,8 +29,8 @@ async function bootstrap() {
 
 	// Swagger configuration
 	const config = new DocumentBuilder()
-		.setTitle("Node Course API")
-		.setDescription("The Node Course API description")
+		.setTitle("Fridge Case API")
+		.setDescription("The Fridge Case API by Michiel Vissenberg")
 		.setVersion("1.0")
 		.addApiKey(
 			{

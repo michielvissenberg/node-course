@@ -100,7 +100,9 @@ describe("Integration tests fridge", () => {
         const { body: updateResponse } = await request(app.getHttpServer())
             .patch(`/api/fridges/${createResponse.id}`)
             .send({
+                address: "Dennenlaan 1",
                 floor: 2,
+                capacity: 500,
             })
             .set("x-auth", token)
             .expect(200);

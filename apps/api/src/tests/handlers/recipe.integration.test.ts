@@ -99,6 +99,7 @@ describe("Integration tests recipe", () => {
         const { body: updateResponse } = await request(app.getHttpServer())
             .patch(`/api/recipes/${createResponse.id}`)
             .send({
+                name: "spaghetti bolognese",
                 description: "nice",
             })
             .set("x-auth", token)

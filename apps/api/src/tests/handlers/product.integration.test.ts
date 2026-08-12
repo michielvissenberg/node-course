@@ -99,6 +99,7 @@ describe("Integration tests product", () => {
         const { body: updateResponse } = await request(app.getHttpServer())
             .patch(`/api/products/${createResponse.id}`)
             .send({
+                name: "milk",
                 size: 2,
             })
             .set("x-auth", token)

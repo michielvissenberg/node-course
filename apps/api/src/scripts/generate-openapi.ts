@@ -9,7 +9,7 @@ async function generate() {
   app.setGlobalPrefix("api");
 
   const config = new DocumentBuilder()
-    .setTitle("Node Course API")
+    .setTitle("Fridge Case API")
     .setVersion("1.0")
     .addApiKey({ type: "apiKey", name: "x-auth", in: "header" }, "x-auth")
     .build();

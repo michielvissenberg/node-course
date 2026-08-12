@@ -193,7 +193,7 @@ export default function RecipesPage() {
                   <li key={ingredient} className="flex items-center justify-between bg-gray-50 p-2 rounded text-sm">{ingredient}</li>
                 )}
               </ul>
-              {viewing.recipe.steps && (
+              {viewing.recipe.steps && viewing.recipe.steps.length > 0 && (
                 <ul className="space-y-2 mt-2">
                   <b>Steps: </b>
                   {viewing.recipe.steps.map((step) =>

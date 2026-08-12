@@ -23,12 +23,20 @@ const recipeFixtures = [
         ingredients: ["test2", "test3"]
     },
 ];
+const userFixture = {
+    name: "testUser",
+    surname: "test",
+    email: "test@test.com",
+    password: "testtest",
+}
 
 describe("Handler tests recipe", () => {
     let recipes: any[];
+    let user: any;
     beforeEach(async () => {
         // Clean up database
         await prisma.recipe.deleteMany();
+        await prisma.user.deleteMany();
 
         // Create test recipes
         recipes = await Promise.all(
@@ -42,6 +50,15 @@ describe("Handler tests recipe", () => {
                 });
             })
         );
+        user = await prisma.user.create({ 
+                data: {
+                    name: userFixture.name,
+                    surname: userFixture.surname,
+                    email: userFixture.email,
+                    password: userFixture.password,
+                }
+            } 
+        )
     });
 
     it("should get recipes", async () => {
@@ -90,6 +107,18 @@ describe("Handler tests recipe", () => {
         expect(res.description).equal(body.description);
         expect(res.name).equal("test1");
         expect(res.ingredients[0]).equal("test");
+    });
+
+    it("should correctly connect a user to a recipe", async () => {
+        const userId = (await prisma.user.findFirst())!.id;
+        const body = {
+            ownerId: userId,
+        }
+        const id = recipes[0].id;
+        const res = await update(id, body, id);
+        
+        expect(res.ownerId).equal(userId);
+        expect(res.id).equal(id);
     });
 
     it("should delete recipe by id", async () => {
