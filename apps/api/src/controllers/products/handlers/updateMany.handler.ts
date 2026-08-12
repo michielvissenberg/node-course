@@ -6,8 +6,8 @@ export const updateManyProducts = async (body: {fridgeId: string | undefined, id
         where: { id: { in: body.ids } },
     });
     
-    if (!existingProducts) {
-        throw new NotFoundException("Products not found");
+    if (!existingProducts || existingProducts.length !== body.ids.length) {
+        throw new NotFoundException("At least one product not found");
     }
 
     existingProducts.map((product) => {

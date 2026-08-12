@@ -7,8 +7,8 @@ export const deleteManyProducts = async (body: {fridgeId: string | undefined, id
         where: { id: { in: body.ids } },
     });
     
-    if (!existingProducts) {
-        throw new NotFoundException("Product not found");
+    if (!existingProducts || existingProducts.length !== body.ids.length) {
+        throw new NotFoundException("At least one product not found");
     }
     
     existingProducts.map((product) => {

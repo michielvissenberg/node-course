@@ -49,15 +49,14 @@ export default function ProductInList(props: {product: ProductView}) {
             <p className="text-sm text-slate-500">{props.product.size}</p>
           </div>
           <div className="flex gap-2">
-            {props.product.fridgeId == null &&(
+            {props.product.fridgeId == null ? (
               <Button
                 variant="secondary"
                 onClick={() => setInFridge({mode: "putIn", product})}
               >
                 Put in fridge
               </Button>
-            )}
-            {props.product.fridgeId && (
+            ): (
               <Button
                 variant="secondary"
                 onClick={() => updateProduct.mutate({
@@ -72,7 +71,7 @@ export default function ProductInList(props: {product: ProductView}) {
               >
                 Take out of fridge
               </Button>
-          )}
+            )}
             {props.product.ownerId == null && (
               <Button
                 variant="secondary"
