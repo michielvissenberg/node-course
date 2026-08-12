@@ -109,6 +109,18 @@ describe("Handler tests recipe", () => {
         expect(res.ingredients[0]).equal("test");
     });
 
+    it("should leave fields the body omits untouched", async () => {
+        const id = recipes[0].id;
+        await update(id, { steps: ["chop", "fry"] }, id);
+
+        const res = await update(id, { name: "renamed" }, id);
+
+        expect(res.name).equal("renamed");
+        expect(res.description).equal("testDesc1");
+        expect(res.ingredients).deep.equal(["test", "test1"]);
+        expect(res.steps).deep.equal(["chop", "fry"]);
+    });
+
     it("should update recipe steps", async () => {
         const id = recipes[0].id;
         const res = await update(id, { steps: ["chop", "fry"] }, id);

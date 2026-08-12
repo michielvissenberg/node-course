@@ -8,6 +8,7 @@ import {
   updateRecipe,
   getAiRecipe,
   type RecipeBody,
+  type UpdateRecipeBody,
 } from "@node-course/api-sdk";
 
 const RECIPES_KEY = ["recipes"];
@@ -40,7 +41,7 @@ export function useCreateRecipe() {
 export function useUpdateRecipe() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, body }: { id: string; body: RecipeBody }) => {
+    mutationFn: async ({ id, body }: { id: string; body: UpdateRecipeBody }) => {
       const { data, error } = await updateRecipe({ path: { id }, body });
       if (error) {
         throw error;

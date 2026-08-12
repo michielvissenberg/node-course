@@ -4,6 +4,7 @@ import { ApiOperation, ApiResponse, ApiSecurity } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../../guards/jwt-auth.guard";
 import { SearchQuery } from "../../contracts/search.query";
 import { RecipeBody } from "../../contracts/recipe.body";
+import { UpdateRecipeBody } from "../../contracts/update-recipe.body";
 import { RecipeView } from "../../contracts/recipe.view";
 import { create } from "./handlers/create.handler";
 import { getList } from "./handlers/getList.handler";
@@ -74,7 +75,7 @@ export class RecipeController {
     @ApiSecurity("x-auth")
     @Serialize(RecipeView)
     @ApiOperation({ operationId: "updateRecipe", summary: "Update a recipe" })
-    async update(@Param("id") id: string, @Body() body: RecipeBody, @CurrentUser("userId") userId: string): Promise<RecipeView> {
+    async update(@Param("id") id: string, @Body() body: UpdateRecipeBody, @CurrentUser("userId") userId: string): Promise<RecipeView> {
         return update(id, body, userId);
     }
   

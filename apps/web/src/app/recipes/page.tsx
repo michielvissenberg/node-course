@@ -157,22 +157,15 @@ export default function RecipesPage() {
               submitLabel={editing.mode === "create" ? "Create" : "Save"}
               pending={createRecipe.isPending || updateRecipe.isPending}
               onCancel={() => setEditing(null)}
-              onSubmit={editing.mode === "create" 
-                ? (body: RecipeBody) => 
-                  {createRecipe.mutate({
-                    name: body.name,
-                    description: body.description,
-                    ingredients: body.ingredients!.slice(),                  
-                    ownerId: id,
-                  }, { onSuccess: () => setEditing(null) });} 
-                : (body: RecipeBody) => 
+              onSubmit={editing.mode === "create"
+                ? (body: RecipeBody) =>
+                  {createRecipe.mutate(
+                    { ...body, ownerId: id },
+                    { onSuccess: () => setEditing(null) }
+                  );}
+                : (body: RecipeBody) =>
                   {updateRecipe.mutate(
-                    { id: editing.recipe.id, body: {
-                      name: body.name,
-                      description: body.description,
-                      ingredients: body.ingredients!.slice(),
-                      ownerId: id,
-                    } },
+                    { id: editing.recipe.id, body: { ...body, ownerId: id } },
                     { onSuccess: () => setEditing(null) }
                   );}
               }

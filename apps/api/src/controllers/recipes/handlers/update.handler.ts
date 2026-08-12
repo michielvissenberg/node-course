@@ -1,5 +1,5 @@
 import { ForbiddenException, NotFoundException } from "@nestjs/common";
-import { RecipeBody } from "../../../contracts/recipe.body";
+import { UpdateRecipeBody } from "../../../contracts/update-recipe.body";
 import { recipeData } from "../../../contracts/data.schemas";
 import { toUpdateData } from "../../../lib/data";
 import { prisma } from "../../../lib/prisma";
@@ -7,7 +7,7 @@ import { assertOwnerExists } from "../../../lib/rules";
 
 export const update = async (
     id: string,
-    body: Partial<RecipeBody>,
+    body: UpdateRecipeBody,
     userId: string
 ) => {
     const recipe = await prisma.recipe.findUnique({ where: { id } });

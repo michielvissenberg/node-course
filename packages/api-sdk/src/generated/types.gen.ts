@@ -89,6 +89,14 @@ export type AiResponseBody = {
     steps: Array<string>;
 };
 
+export type UpdateRecipeBody = {
+    name?: string;
+    description?: string;
+    ownerId?: string | null;
+    ingredients?: Array<string>;
+    steps?: Array<string>;
+};
+
 export type LoginBody = {
     email: string;
     password: string;
@@ -453,7 +461,7 @@ export type GetRecipeResponses = {
 };
 
 export type UpdateRecipeData = {
-    body: RecipeBody;
+    body: UpdateRecipeBody;
     path: {
         id: string;
     };
