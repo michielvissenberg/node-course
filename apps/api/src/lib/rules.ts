@@ -1,8 +1,4 @@
-import {
-	ForbiddenException,
-	ImATeapotException,
-	NotFoundException,
-} from "@nestjs/common";
+import { ImATeapotException, NotFoundException } from "@nestjs/common";
 import { prisma } from "./prisma";
 
 /**
@@ -70,29 +66,5 @@ export const assertCapacityFitsContents = async (
 
 	if (usedSize > capacity) {
 		throw new ImATeapotException("Fridge too small");
-	}
-};
-
-/**
- * Throws unless every id exists and none of the products belong to another
- * user. Products without an owner are free for anyone to touch.
- */
-export const assertProductsAreOwnedBy = async (
-	ids: string[],
-	userId: string,
-	message: string
-) => {
-	const products = await prisma.product.findMany({ where: { id: { in: ids } } });
-
-	if (products.length !== ids.length) {
-		throw new NotFoundException("At least one product not found");
-	}
-
-	const belongsToSomeoneElse = products.some(
-		(product) => product.ownerId != null && product.ownerId !== userId
-	);
-
-	if (belongsToSomeoneElse) {
-		throw new ForbiddenException(message);
 	}
 };

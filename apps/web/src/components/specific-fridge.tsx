@@ -7,7 +7,7 @@ import ProductInList from "./product-in-list";
 import { useState } from "react";
 import { GiftForm } from "./gift-form";
 
-type Gifting = { mode: "gift"; product: string[]  } | null;
+type Gifting = { mode: "gift" } | null;
 
 export default function SpecificFridge(props: {fridge: FridgeView}) {
   const [onlyShowMine, setOnlyShowMine] = useState<boolean>(false);
@@ -17,8 +17,6 @@ export default function SpecificFridge(props: {fridge: FridgeView}) {
   const deleteProduct = useDeleteProduct();
   const deleteMany = useDeleteManyProducts();
   const updateMany = useUpdateManyProducts();
-  const toBeDeleted: string[] = [];
-  const toBeUpdated: string[] = [];
 
   const id = getId();
 
@@ -50,15 +48,7 @@ export default function SpecificFridge(props: {fridge: FridgeView}) {
         <div className="flex gap-2">
           <Button 
             variant="secondary"
-            onClick={() => {
-              productsQuery.data?.map((product) => {
-                product.ownerId == id ? 
-                  toBeUpdated.push(product.id)
-                : 
-                  null
-                })
-              setGifting({mode: "gift", product: toBeUpdated})
-            }}
+            onClick={() => setGifting({ mode: "gift" })}
           >
             Gift all 
           </Button>
@@ -67,13 +57,7 @@ export default function SpecificFridge(props: {fridge: FridgeView}) {
             disabled={deleteProduct.isPending}
             onClick={() => {
               if (confirm(`Delete all your products in this fridge?`)) {
-                productsQuery.data?.map((product) => (
-                  product.ownerId == id ? 
-                    toBeDeleted.push(product.id)
-                  :
-                    null
-                ))
-                deleteMany.mutate({fridgeId: props.fridge.id, ids: toBeDeleted})
+                deleteMany.mutate({ fridgeId: props.fridge.id })
               }
             }}
           >
@@ -92,11 +76,7 @@ export default function SpecificFridge(props: {fridge: FridgeView}) {
               onCancel={() => setGifting(null)}
               onSubmit={(newOwner: string) => {
                 updateMany.mutate(
-                  {
-                    fridgeId: props.fridge.id,
-                    ids: gifting.product,
-                    newOwnerId: newOwner,
-                  },
+                  { fridgeId: props.fridge.id, newOwnerId: newOwner },
                   { onSuccess: () => setGifting(null)}
                 )
               }}

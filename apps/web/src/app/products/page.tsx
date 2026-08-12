@@ -20,7 +20,7 @@ import ProductInList from "@/components/product-in-list";
 import { GiftForm } from "@/components/gift-form";
 
 type Editing = { mode: "create" } | { mode: "edit"; product: ProductView } | null;
-type Gifting = { mode: "gift"; product: string[] } | null;
+type Gifting = { mode: "gift" } | null;
 
 export default function ProductsPage() {
   const router = useRouter();
@@ -45,8 +45,6 @@ export default function ProductsPage() {
   const updateMany = useUpdateManyProducts();
   const deleteProduct = useDeleteProduct();
   const deleteMany = useDeleteManyProducts();
-  const toBeDeleted: string[] = [];
-  const toBeUpdated: string[] = [];
 
   
   const id = getId();
@@ -125,15 +123,7 @@ export default function ProductsPage() {
         <div className="flex gap-2">
           <Button 
             variant="secondary"
-            onClick={() => {
-              productsQuery.data?.map((product) => {
-                product.ownerId == id ? 
-                  toBeUpdated.push(product.id)
-                : 
-                  null
-                })
-              setGifting({mode: "gift", product: toBeUpdated})
-            }}
+            onClick={() => setGifting({ mode: "gift" })}
           >
             Gift all 
           </Button>
@@ -142,13 +132,7 @@ export default function ProductsPage() {
             disabled={deleteProduct.isPending}
             onClick={() => {
               if (confirm(`Delete all your products?`)) {
-                productsQuery.data?.map((product) => (
-                  product.ownerId == id ? 
-                    toBeDeleted.push(product.id)
-                  :
-                    null
-                ))
-                deleteMany.mutate({fridgeId: undefined, ids: toBeDeleted})
+                deleteMany.mutate({})
               }
             }}
           >
@@ -198,11 +182,7 @@ export default function ProductsPage() {
               onCancel={() => setGifting(null)}
               onSubmit={(newOwner: string) => {
                 updateMany.mutate(
-                  {
-                    fridgeId: undefined,
-                    ids: gifting.product,
-                    newOwnerId: newOwner,
-                  },
+                  { newOwnerId: newOwner },
                   { onSuccess: () => setGifting(null)}
                 )
               }}

@@ -363,6 +363,16 @@
       "patch": {
         "operationId": "deleteMultiple",
         "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteManyProductsBody"
+              }
+            }
+          }
+        },
         "responses": {
           "204": {
             "description": ""
@@ -373,7 +383,7 @@
             "x-auth": []
           }
         ],
-        "summary": "Delete products by list of ids",
+        "summary": "Delete all your products, optionally limited to one fridge",
         "tags": [
           "Product"
         ]
@@ -383,6 +393,16 @@
       "patch": {
         "operationId": "updateMultiple",
         "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateManyProductsBody"
+              }
+            }
+          }
+        },
         "responses": {
           "204": {
             "description": ""
@@ -393,7 +413,7 @@
             "x-auth": []
           }
         ],
-        "summary": "Update products by list of ids",
+        "summary": "Hand all your products to another user, optionally limited to one fridge",
         "tags": [
           "Product"
         ]
@@ -923,6 +943,31 @@
           "id",
           "name",
           "size"
+        ]
+      },
+      "DeleteManyProductsBody": {
+        "type": "object",
+        "properties": {
+          "fridgeId": {
+            "type": "string",
+            "description": "Only delete products in this fridge"
+          }
+        }
+      },
+      "UpdateManyProductsBody": {
+        "type": "object",
+        "properties": {
+          "fridgeId": {
+            "type": "string",
+            "description": "Only hand over products in this fridge"
+          },
+          "newOwnerId": {
+            "type": "string",
+            "description": "The user receiving the products"
+          }
+        },
+        "required": [
+          "newOwnerId"
         ]
       },
       "UpdateProductBody": {

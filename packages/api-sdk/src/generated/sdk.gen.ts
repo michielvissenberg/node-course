@@ -124,21 +124,29 @@ export const updateProduct = <ThrowOnError extends boolean = false>(options: Opt
 });
 
 /**
- * Delete products by list of ids
+ * Delete all your products, optionally limited to one fridge
  */
-export const deleteMultiple = <ThrowOnError extends boolean = false>(options?: Options<DeleteMultipleData, ThrowOnError>): RequestResult<DeleteMultipleResponses, unknown, ThrowOnError> => (options?.client ?? client).patch<DeleteMultipleResponses, unknown, ThrowOnError>({
+export const deleteMultiple = <ThrowOnError extends boolean = false>(options: Options<DeleteMultipleData, ThrowOnError>): RequestResult<DeleteMultipleResponses, unknown, ThrowOnError> => (options.client ?? client).patch<DeleteMultipleResponses, unknown, ThrowOnError>({
     security: [{ name: 'x-auth', type: 'apiKey' }],
     url: '/api/products/deleteMany',
-    ...options
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**
- * Update products by list of ids
+ * Hand all your products to another user, optionally limited to one fridge
  */
-export const updateMultiple = <ThrowOnError extends boolean = false>(options?: Options<UpdateMultipleData, ThrowOnError>): RequestResult<UpdateMultipleResponses, unknown, ThrowOnError> => (options?.client ?? client).patch<UpdateMultipleResponses, unknown, ThrowOnError>({
+export const updateMultiple = <ThrowOnError extends boolean = false>(options: Options<UpdateMultipleData, ThrowOnError>): RequestResult<UpdateMultipleResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateMultipleResponses, unknown, ThrowOnError>({
     security: [{ name: 'x-auth', type: 'apiKey' }],
     url: '/api/products/updateMany',
-    ...options
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**

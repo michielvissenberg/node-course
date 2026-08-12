@@ -8,6 +8,8 @@ import {
   listProducts, 
   type ProductBody,
   type UpdateProductBody,
+  type DeleteManyProductsBody,
+  type UpdateManyProductsBody,
   updateProduct,
   updateMultiple,
 } from "@node-course/api-sdk";
@@ -70,22 +72,27 @@ export function useDeleteProduct() {
   });
 }
 
+/**
+ * Deletes every product you own. The server resolves which products those are,
+ * so there is no list of ids to go stale between reading and deleting.
+ */
 export function useDeleteManyProducts() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({fridgeId, ids}: {fridgeId?: string, ids: string[]}) => {
-      const { error } = await deleteMultiple({body: {fridgeId, ids}} as any);
+    mutationFn: async (body: DeleteManyProductsBody) => {
+      const { error } = await deleteMultiple({ body });
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: PRODUCT_KEY }),
   });
 }
 
+/** Hands every product you own to another user, same resolution as above. */
 export function useUpdateManyProducts() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({fridgeId, ids, newOwnerId}: {fridgeId?: string, ids: string[], newOwnerId: string}) => {
-      const { error } = await updateMultiple({body: {fridgeId, ids, newOwnerId}} as any);
+    mutationFn: async (body: UpdateManyProductsBody) => {
+      const { error } = await updateMultiple({ body });
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: PRODUCT_KEY }),

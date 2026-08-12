@@ -1,24 +1,21 @@
+import { DeleteManyProductsBody } from "../../../contracts/delete-many-products.body";
 import { prisma } from "../../../lib/prisma";
-import { assertProductsAreOwnedBy } from "../../../lib/rules";
 
-export type DeleteManyProductsBody = {
-    fridgeId?: string;
-    ids: string[];
-};
-
+/**
+ * Deletes every product the caller owns, optionally limited to one fridge.
+ *
+ * The set is resolved inside the delete rather than handed in as a list of ids,
+ * so nothing can change between choosing the products and removing them. It
+ * needs no ownership check either: `ownerId: userId` is both the filter and the
+ * permission, so a product that is not the caller's simply never matches.
+ */
 export const deleteManyProducts = async (
     body: DeleteManyProductsBody,
     userId: string
 ) => {
-    await assertProductsAreOwnedBy(
-        body.ids,
-        userId,
-        "cannot delete a product of another user"
-    );
-
-    await prisma.product.deleteMany({
+    return prisma.product.deleteMany({
         where: {
-            id: { in: body.ids },
+            ownerId: userId,
             ...(body.fridgeId && { fridgeId: body.fridgeId }),
         },
     });

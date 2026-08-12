@@ -40,6 +40,24 @@ export type ProductView = {
     fridgeId?: string;
 };
 
+export type DeleteManyProductsBody = {
+    /**
+     * Only delete products in this fridge
+     */
+    fridgeId?: string;
+};
+
+export type UpdateManyProductsBody = {
+    /**
+     * Only hand over products in this fridge
+     */
+    fridgeId?: string;
+    /**
+     * The user receiving the products
+     */
+    newOwnerId: string;
+};
+
 export type UpdateProductBody = {
     name?: string;
     size?: number;
@@ -282,7 +300,7 @@ export type UpdateProductResponses = {
 };
 
 export type DeleteMultipleData = {
-    body?: never;
+    body: DeleteManyProductsBody;
     path?: never;
     query?: never;
     url: '/api/products/deleteMany';
@@ -295,7 +313,7 @@ export type DeleteMultipleResponses = {
 export type DeleteMultipleResponse = DeleteMultipleResponses[keyof DeleteMultipleResponses];
 
 export type UpdateMultipleData = {
-    body?: never;
+    body: UpdateManyProductsBody;
     path?: never;
     query?: never;
     url: '/api/products/updateMany';

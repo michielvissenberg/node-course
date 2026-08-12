@@ -226,20 +226,113 @@ describe("Handler tests product", () => {
         expect(true, "should have thrown an error").false;
     })
 
-    it("should update multiple entries' owner ids", async () => {
-        const userId = (await user).id;
+    it("should hand over every product the caller owns", async () => {
+        const owner = await prisma.user.create({
+            data: { name: "owner", surname: "o", email: "owner@test.com", password: "x" },
+        });
+        await prisma.product.updateMany({
+            where: { id: { in: [products[0].id, products[1].id] } },
+            data: { ownerId: owner.id },
+        });
 
-        const ids: string[] = [products[0].id, products[1].id];
-        const res = await updateManyProducts( {fridgeId: undefined, ids: ids, newOwnerId: userId}, "1");
+        const res = await updateManyProducts({ newOwnerId: user.id }, owner.id);
 
         expect(res.count).equal(2);
+        const handedOver = await prisma.product.findMany({ where: { ownerId: user.id } });
+        expect(handedOver).length(2);
     })
 
-    it("should delete multiple entries", async () => {
-        const ids: string[] = [products[0].id, products[1].id];
-        const res = await deleteManyProducts( {fridgeId: undefined, ids: ids}, "1");
+    it("should not hand over products belonging to someone else", async () => {
+        const stranger = await prisma.user.create({
+            data: { name: "stranger", surname: "s", email: "stranger@test.com", password: "x" },
+        });
+        await prisma.product.update({
+            where: { id: products[0].id },
+            data: { ownerId: stranger.id },
+        });
 
-        const count = await prisma.product.count();
-        expect(0).equal(count);
+        const res = await updateManyProducts({ newOwnerId: user.id }, "not-the-owner");
+
+        expect(res.count).equal(0);
+        const untouched = await prisma.product.findUnique({ where: { id: products[0].id } });
+        expect(untouched!.ownerId).equal(stranger.id);
+    })
+
+    it("should only hand over products in the given fridge", async () => {
+        await prisma.product.updateMany({
+            where: { id: { in: [products[0].id, products[1].id] } },
+            data: { ownerId: user.id },
+        });
+        await prisma.product.update({
+            where: { id: products[0].id },
+            data: { fridgeId: fridge.id },
+        });
+        const receiver = await prisma.user.create({
+            data: { name: "receiver", surname: "r", email: "receiver@test.com", password: "x" },
+        });
+
+        const res = await updateManyProducts(
+            { fridgeId: fridge.id, newOwnerId: receiver.id },
+            user.id
+        );
+
+        expect(res.count).equal(1);
+        const stillMine = await prisma.product.findUnique({ where: { id: products[1].id } });
+        expect(stillMine!.ownerId).equal(user.id);
+    })
+
+    it("should fail when handing products to a user that does not exist", async () => {
+        try {
+            await updateManyProducts({ newOwnerId: randomUUID() }, user.id);
+        } catch (error: any) {
+            expect(error.message).equal("Owner not found")
+            return
+        }
+        expect(true, "should have thrown an error").false;
+    })
+
+    it("should delete every product the caller owns", async () => {
+        await prisma.product.updateMany({
+            where: { id: { in: [products[0].id, products[1].id] } },
+            data: { ownerId: user.id },
+        });
+
+        const res = await deleteManyProducts({}, user.id);
+
+        expect(res.count).equal(2);
+        expect(await prisma.product.count()).equal(0);
+    })
+
+    it("should not delete products belonging to someone else", async () => {
+        const stranger = await prisma.user.create({
+            data: { name: "stranger", surname: "s", email: "stranger2@test.com", password: "x" },
+        });
+        await prisma.product.update({
+            where: { id: products[0].id },
+            data: { ownerId: stranger.id },
+        });
+
+        const res = await deleteManyProducts({}, user.id);
+
+        expect(res.count).equal(0);
+        expect(await prisma.product.count()).equal(2);
+    })
+
+    it("should only delete products in the given fridge", async () => {
+        await prisma.product.updateMany({
+            where: { id: { in: [products[0].id, products[1].id] } },
+            data: { ownerId: user.id },
+        });
+        await prisma.product.update({
+            where: { id: products[0].id },
+            data: { fridgeId: fridge.id },
+        });
+
+        const res = await deleteManyProducts({ fridgeId: fridge.id }, user.id);
+
+        expect(res.count).equal(1);
+        const remaining = await prisma.product.findMany();
+        expect(remaining).length(1);
+        expect(remaining[0].id).equal(products[1].id);
     })
 });
