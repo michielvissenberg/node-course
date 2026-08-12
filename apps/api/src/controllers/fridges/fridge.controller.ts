@@ -5,6 +5,7 @@ import { JwtAuthGuard } from "../../guards/jwt-auth.guard";
 import { SearchQuery } from "../../contracts/search.query";
 import { FridgeView } from "../../contracts/fridge.view";
 import { FridgeBody } from "../../contracts/fridge.body";
+import { UpdateFridgeBody } from "../../contracts/update-fridge.body";
 import { createFridge } from "./handlers/create.handler";
 import { getList } from "./handlers/getList.handler";
 import { get } from "./handlers/get.handler";
@@ -57,7 +58,7 @@ export class FridgeController {
     @ApiSecurity("x-auth")
     @Serialize(FridgeView)
     @ApiOperation({ operationId: "updateFridge", summary: "Update a fridge" })
-    async update(@Param("id") id: string, @Body() body: FridgeBody): Promise<FridgeView> {
+    async update(@Param("id") id: string, @Body() body: UpdateFridgeBody): Promise<FridgeView> {
         return update(id, body);
     }
   

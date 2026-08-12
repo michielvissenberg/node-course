@@ -60,6 +60,12 @@ export type FridgeView = {
     capacity: number;
 };
 
+export type UpdateFridgeBody = {
+    address?: string;
+    floor?: number;
+    capacity?: number;
+};
+
 export type RecipeBody = {
     name: string;
     description: string;
@@ -367,7 +373,7 @@ export type GetFridgeResponses = {
 };
 
 export type UpdateFridgeData = {
-    body: FridgeBody;
+    body: UpdateFridgeBody;
     path: {
         id: string;
     };

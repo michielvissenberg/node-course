@@ -89,6 +89,15 @@ describe("Handler tests fridge", () => {
         expect(res.address).equal("Dennenlaan 1");
     });
 
+    it("should leave fields the body omits untouched", async () => {
+        const id = fridges[0].id;
+        const res = await update(id, { floor: 9 });
+
+        expect(res.floor).equal(9);
+        expect(res.address).equal("Dennenlaan 1");
+        expect(res.capacity).equal(100);
+    });
+
     it("should update fridge address", async () => {
         const id = fridges[0].id;
         const res = await update(id, { address: "Eikenlaan 7" });

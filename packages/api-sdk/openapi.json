@@ -519,7 +519,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/FridgeBody"
+                "$ref": "#/components/schemas/UpdateFridgeBody"
               }
             }
           }
@@ -986,6 +986,20 @@
           "floor",
           "capacity"
         ]
+      },
+      "UpdateFridgeBody": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "floor": {
+            "type": "number"
+          },
+          "capacity": {
+            "type": "number"
+          }
+        }
       },
       "RecipeBody": {
         "type": "object",

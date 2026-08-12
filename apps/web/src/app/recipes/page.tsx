@@ -165,7 +165,7 @@ export default function RecipesPage() {
                   );}
                 : (body: RecipeBody) =>
                   {updateRecipe.mutate(
-                    { id: editing.recipe.id, body: { ...body, ownerId: id } },
+                    { id: editing.recipe.id, body },
                     { onSuccess: () => setEditing(null) }
                   );}
               }

@@ -1,10 +1,10 @@
 import { NotFoundException } from "@nestjs/common";
-import { FridgeBody } from "../../../contracts/fridge.body";
+import { UpdateFridgeBody } from "../../../contracts/update-fridge.body";
 import { fridgeData } from "../../../contracts/data.schemas";
 import { toUpdateData } from "../../../lib/data";
 import { prisma } from "../../../lib/prisma";
 
-export const update = async (id: string, body: Partial<FridgeBody>) => {
+export const update = async (id: string, body: UpdateFridgeBody) => {
     const fridge = await prisma.fridge.findUnique({ where: { id } });
 
     if (!fridge) {

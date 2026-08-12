@@ -7,6 +7,7 @@ import {
   listFridges,
   updateFridge,
   type FridgeBody,
+  type UpdateFridgeBody,
 } from "@node-course/api-sdk";
 
 const FRIDGES_KEY = ["fridges"];
@@ -39,7 +40,7 @@ export function useCreateFridge() {
 export function useUpdateFridge() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, body }: { id: string; body: FridgeBody }) => {
+    mutationFn: async ({ id, body }: { id: string; body: UpdateFridgeBody }) => {
       const { data, error } = await updateFridge({ path: { id }, body });
       if (error) {
         throw error;
