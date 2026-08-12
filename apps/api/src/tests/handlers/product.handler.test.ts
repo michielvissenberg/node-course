@@ -8,7 +8,6 @@ import { deleteProduct } from "../../controllers/products/handlers/delete.handle
 import { get } from "../../controllers/products/handlers/get.handler";
 import { getList } from "../../controllers/products/handlers/getList.handler";
 import { update } from "../../controllers/products/handlers/update.handler";
-import { createFridge} from "../../controllers/fridges/handlers/create.handler";
 import { updateManyProducts } from "../../controllers/products/handlers/updateMany.handler";
 import { deleteManyProducts } from "../../controllers/products/handlers/deleteMany.handler";
 
