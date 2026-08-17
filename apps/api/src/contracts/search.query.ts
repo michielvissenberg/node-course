@@ -1,0 +1,13 @@
+import { ApiPropertyOptional } from "@nestjs/swagger";
+import { Exclude, Expose } from "class-transformer";
+import { IsString, IsOptional } from "class-validator";
+
+@Exclude()
+export class SearchQuery {
+    @ApiPropertyOptional({ description: "Filter" })
+    @Expose()
+    @IsString()
+    @IsOptional()
+    public search?: string;
+
+}
